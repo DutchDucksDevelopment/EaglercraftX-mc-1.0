@@ -1,0 +1,134 @@
+package net.minecraft.src;
+
+import java.util.List;
+import java.util.Random;
+import net.minecraft.src.ComponentNetherBridgeStartPiece;
+import net.minecraft.src.StructureBoundingBox;
+import net.minecraft.src.StructureComponent;
+import net.minecraft.src.StructureNetherBridgeEnd;
+import net.minecraft.src.StructureNetherBridgePieceWeight;
+import net.minecraft.src.StructureNetherBridgePieces;
+
+abstract class ComponentNetherBridgePiece extends StructureComponent {
+   protected ComponentNetherBridgePiece(int var1) {
+      super(var1);
+   }
+
+   private int func_40017_a(List var1) {
+      boolean var2 = false;
+      int var3 = 0;
+
+      for(StructureNetherBridgePieceWeight var5 : var1) {
+         if(var5.field_40695_d > 0 && var5.field_40698_c < var5.field_40695_d) {
+            var2 = true;
+         }
+
+         var3 += var5.field_40697_b;
+      }
+
+      return var2?var3:-1;
+   }
+
+   private ComponentNetherBridgePiece func_40020_a(ComponentNetherBridgeStartPiece var1, List var2, List var3, Random var4, int var5, int var6, int var7, int var8, int var9) {
+      int var10 = this.func_40017_a(var2);
+      boolean var11 = var10 > 0 && var9 <= 30;
+      int var12 = 0;
+
+      while(var12 < 5 && var11) {
+         ++var12;
+         int var13 = var4.nextInt(var10);
+
+         for(StructureNetherBridgePieceWeight var15 : var2) {
+            var13 -= var15.field_40697_b;
+            if(var13 < 0) {
+               if(!var15.func_40693_a(var9) || var15 == var1.field_40037_a && !var15.field_40696_e) {
+                  break;
+               }
+
+               ComponentNetherBridgePiece var16 = StructureNetherBridgePieces.func_40688_a(var15, var3, var4, var5, var6, var7, var8, var9);
+               if(var16 != null) {
+                  ++var15.field_40698_c;
+                  var1.field_40037_a = var15;
+                  if(!var15.func_40694_a()) {
+                     var2.remove(var15);
+                  }
+
+                  return var16;
+               }
+            }
+         }
+      }
+
+      StructureNetherBridgeEnd var17 = StructureNetherBridgeEnd.func_40023_a(var3, var4, var5, var6, var7, var8, var9);
+      return var17;
+   }
+
+   private StructureComponent func_40018_a(ComponentNetherBridgeStartPiece var1, List var2, Random var3, int var4, int var5, int var6, int var7, int var8, boolean var9) {
+      if(Math.abs(var4 - var1.getBoundingBox().minX) <= 112 && Math.abs(var6 - var1.getBoundingBox().minZ) <= 112) {
+         List var12 = var1.field_40035_b;
+         if(var9) {
+            var12 = var1.field_40036_c;
+         }
+
+         ComponentNetherBridgePiece var11 = this.func_40020_a(var1, var12, var2, var3, var4, var5, var6, var7, var8 + 1);
+         if(var11 != null) {
+            var2.add(var11);
+            var1.field_40034_d.add(var11);
+         }
+
+         return var11;
+      } else {
+         StructureNetherBridgeEnd var10 = StructureNetherBridgeEnd.func_40023_a(var2, var3, var4, var5, var6, var7, var8);
+         return var10;
+      }
+   }
+
+   protected StructureComponent func_40022_a(ComponentNetherBridgeStartPiece var1, List var2, Random var3, int var4, int var5, boolean var6) {
+      switch(this.coordBaseMode) {
+      case 0:
+         return this.func_40018_a(var1, var2, var3, this.boundingBox.minX + var4, this.boundingBox.minY + var5, this.boundingBox.maxZ + 1, this.coordBaseMode, this.func_35012_c(), var6);
+      case 1:
+         return this.func_40018_a(var1, var2, var3, this.boundingBox.minX - 1, this.boundingBox.minY + var5, this.boundingBox.minZ + var4, this.coordBaseMode, this.func_35012_c(), var6);
+      case 2:
+         return this.func_40018_a(var1, var2, var3, this.boundingBox.minX + var4, this.boundingBox.minY + var5, this.boundingBox.minZ - 1, this.coordBaseMode, this.func_35012_c(), var6);
+      case 3:
+         return this.func_40018_a(var1, var2, var3, this.boundingBox.maxX + 1, this.boundingBox.minY + var5, this.boundingBox.minZ + var4, this.coordBaseMode, this.func_35012_c(), var6);
+      default:
+         return null;
+      }
+   }
+
+   protected StructureComponent func_40019_b(ComponentNetherBridgeStartPiece var1, List var2, Random var3, int var4, int var5, boolean var6) {
+      switch(this.coordBaseMode) {
+      case 0:
+         return this.func_40018_a(var1, var2, var3, this.boundingBox.minX - 1, this.boundingBox.minY + var4, this.boundingBox.minZ + var5, 1, this.func_35012_c(), var6);
+      case 1:
+         return this.func_40018_a(var1, var2, var3, this.boundingBox.minX + var5, this.boundingBox.minY + var4, this.boundingBox.minZ - 1, 2, this.func_35012_c(), var6);
+      case 2:
+         return this.func_40018_a(var1, var2, var3, this.boundingBox.minX - 1, this.boundingBox.minY + var4, this.boundingBox.minZ + var5, 1, this.func_35012_c(), var6);
+      case 3:
+         return this.func_40018_a(var1, var2, var3, this.boundingBox.minX + var5, this.boundingBox.minY + var4, this.boundingBox.minZ - 1, 2, this.func_35012_c(), var6);
+      default:
+         return null;
+      }
+   }
+
+   protected StructureComponent func_40016_c(ComponentNetherBridgeStartPiece var1, List var2, Random var3, int var4, int var5, boolean var6) {
+      switch(this.coordBaseMode) {
+      case 0:
+         return this.func_40018_a(var1, var2, var3, this.boundingBox.maxX + 1, this.boundingBox.minY + var4, this.boundingBox.minZ + var5, 3, this.func_35012_c(), var6);
+      case 1:
+         return this.func_40018_a(var1, var2, var3, this.boundingBox.minX + var5, this.boundingBox.minY + var4, this.boundingBox.maxZ + 1, 0, this.func_35012_c(), var6);
+      case 2:
+         return this.func_40018_a(var1, var2, var3, this.boundingBox.maxX + 1, this.boundingBox.minY + var4, this.boundingBox.minZ + var5, 3, this.func_35012_c(), var6);
+      case 3:
+         return this.func_40018_a(var1, var2, var3, this.boundingBox.minX + var5, this.boundingBox.minY + var4, this.boundingBox.maxZ + 1, 0, this.func_35012_c(), var6);
+      default:
+         return null;
+      }
+   }
+
+   protected static boolean func_40021_a(StructureBoundingBox var0) {
+      return var0 != null && var0.minY > 10;
+   }
+}

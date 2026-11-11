@@ -1,0 +1,30 @@
+package net.minecraft.src;
+
+import java.util.List;
+import net.minecraft.src.Chunk;
+import net.minecraft.src.ChunkPosition;
+import net.minecraft.src.EnumCreatureType;
+import net.minecraft.src.IProgressUpdate;
+import net.minecraft.src.World;
+
+public interface IChunkProvider {
+   boolean chunkExists(int var1, int var2);
+
+   Chunk provideChunk(int var1, int var2);
+
+   Chunk loadChunk(int var1, int var2);
+
+   void populate(IChunkProvider var1, int var2, int var3);
+
+   boolean saveChunks(boolean var1, IProgressUpdate var2);
+
+   boolean unload100OldestChunks();
+
+   boolean canSave();
+
+   String makeString();
+
+   List func_40377_a(EnumCreatureType var1, int var2, int var3, int var4);
+
+   ChunkPosition func_40376_a(World var1, String var2, int var3, int var4, int var5);
+}

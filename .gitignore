@@ -9,7 +9,8 @@
 /gradlew
 /gradlew.bat
 /client/
-/mcp/
+/mcp/*
 !/mcp/decompile.*
+!/mcp/1.0/
 !/gradle/local-libs/**
 !/gradle/libs.versions.toml
