@@ -18,6 +18,8 @@ java {
 sourceSets {
 	named("main") {
 		java.srcDirs(
+			"../src/main/java",
+			"../src/game/java",
 			"../src/wasm-gc-teavm/java"
 		)
 		resources.srcDirs(
@@ -37,9 +39,9 @@ dependencies {
 	teavm(teavm.libs.jso)
 	teavm(teavm.libs.jsoApis)
 	compileOnly("org.teavm:teavm-core:0.12.1-EAGLER-R3") // workaround for a few hacks
-	implementation(rootProject)
 	implementation(libs.jorbis)
 	implementation(libs.bundles.common)
+	implementation(fileTree("../gradle/jars") { include("*.jar") })
 }
 
 val wasmFolder = "javascript"
@@ -51,7 +53,7 @@ teavm.wasmGC {
 	outOfProcess = false
 	fastGlobalAnalysis = false
 	processMemory = 512
-	mainClass = "net.lax1dude.eaglercraft.v1_8.internal.wasm_gc_teavm.MainClass"
+	mainClass = "net.lax1dude.eaglercraft.internal.wasm_gc_teavm.MainClass"
 	outputDir = file(wasmFolder)
 	properties = mapOf("java.util.TimeZone.autodetect" to "true")
 	debugInformation = true
@@ -85,14 +87,7 @@ eaglercraftBuild {
 				"$srcFolder/platformNetworking.js",
 				"$srcFolder/platformOpenGL.js",
 				"$srcFolder/platformRuntime.js",
-				"$srcFolder/platformScreenRecord.js",
-				"$srcFolder/platformVoiceClient.js",
-				"$srcFolder/platformWebRTC.js",
-				"$srcFolder/platformWebView.js",
-				"$srcFolder/clientPlatformSingleplayer.js",
-				"$srcFolder/serverPlatformSingleplayer.js",
 				"$srcFolder/WASMGCBufferAllocator.js",
-				"$srcFolder/fix-webm-duration.js",
 				"$srcFolder/teavm_runtime.js",
 				"$srcFolder/eagruntime_entrypoint.js"
 			)
@@ -103,7 +98,7 @@ eaglercraftBuild {
 			epwSearchDirectory = file(wasmFolder)
 			clientBundleOutputDir = file("javascript_dist")
 		}.apply {
-			epkSources = file("../desktopRuntime/resources")
+			epkSources = file("../resources")
 			epkOutput = file("javascript/assets.epk")
 
 			languageMetadataInput = file("../target_teavm_javascript/javascript/lang")

@@ -337,7 +337,7 @@ public final class UCharacterProperty {
 	 * Default name of the datafile
 	 */
 	@SuppressWarnings("deprecation")
-	private static final String DATA_FILE_NAME_ = "/assets/eagler/icudt/uprops.icu";
+	private static final String DATA_FILE_NAME_ = "/eagler/icudt/uprops.icu";
 
 	/**
 	 * Shift value for lead surrogate to form a supplementary character.

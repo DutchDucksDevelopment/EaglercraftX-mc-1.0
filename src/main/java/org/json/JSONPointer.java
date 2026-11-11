@@ -1,6 +1,6 @@
 package org.json;
 
-import static net.lax1dude.eaglercraft.v1_8.HString.format;
+import static net.lax1dude.eaglercraft.HString.format;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;

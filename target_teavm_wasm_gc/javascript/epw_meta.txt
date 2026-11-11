@@ -1,5 +1,5 @@
 client-version-integer=52
-client-package-name=net.lax1dude.eaglercraft.v1_8.client
+client-package-name=net.lax1dude.eaglercraft.client
 client-origin-name=EaglercraftX
 client-origin-version=u52
 client-origin-vendor=lax1dude

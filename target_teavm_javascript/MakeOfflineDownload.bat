@@ -1,4 +1,5 @@
 @echo off
 cd ../
-call gradlew target_teavm_javascript:makeMainOfflineDownload
+call scripts/wrapper.bat
+call gradlew target_teavm_javascript:makeMainOfflineDownload %*
 pause

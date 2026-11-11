@@ -198,7 +198,7 @@ public final class UBiDiProps {
 
 	// data format constants ----------------------------------------------- ***
 	@SuppressWarnings("deprecation")
-	private static final String DATA_FILE_NAME = "/assets/eagler/icudt/ubidi.icu";
+	private static final String DATA_FILE_NAME = "/eagler/icudt/ubidi.icu";
 
 	/* format "BiDi" */
 	private static final int FMT = 0x42694469;

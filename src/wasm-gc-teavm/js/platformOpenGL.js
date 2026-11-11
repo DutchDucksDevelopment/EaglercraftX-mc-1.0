@@ -146,6 +146,8 @@ function setCurrentGLContext(ctx, glesVersIn, allowExts, glImports) {
 	glImports["glDrawArrays"] = ctx.drawArrays.bind(ctx);
 	glImports["glDrawElements"] = ctx.drawElements.bind(ctx);
 	glImports["glDrawRangeElements"] = glesVersIn >= 300 ? ctx.drawRangeElements.bind(ctx) : unsupportedFunc(platfOpenGLName, "glDrawRangeElements");
+	glImports["glFlush"] = ctx.flush.bind(ctx);
+	glImports["glScissor"] = ctx.scissor.bind(ctx);
 	glImports["glBindAttribLocation"] = ctx.bindAttribLocation.bind(ctx);
 	glImports["glGetAttribLocation"] = ctx.getAttribLocation.bind(ctx);
 	glImports["glGetUniformLocation"] = ctx.getUniformLocation.bind(ctx);
@@ -346,6 +348,8 @@ function setNoGLContext(glImports) {
 	setUnsupportedFunc(glImports, platfOpenGLName, "glDrawArrays");
 	setUnsupportedFunc(glImports, platfOpenGLName, "glDrawElements");
 	setUnsupportedFunc(glImports, platfOpenGLName, "glDrawRangeElements");
+	setUnsupportedFunc(glImports, platfOpenGLName, "glFlush");
+	setUnsupportedFunc(glImports, platfOpenGLName, "glScissor");
 	setUnsupportedFunc(glImports, platfOpenGLName, "glBindAttribLocation");
 	setUnsupportedFunc(glImports, platfOpenGLName, "glGetAttribLocation");
 	setUnsupportedFunc(glImports, platfOpenGLName, "glGetUniformLocation");

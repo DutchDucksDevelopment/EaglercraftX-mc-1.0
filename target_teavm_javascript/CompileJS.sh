@@ -1,4 +1,4 @@
 #!/bin/sh
 cd ../
-chmod +x gradlew
-./gradlew target_teavm_javascript:assembleMainComponents
+sh ./scripts/wrapper.sh
+./gradlew target_teavm_javascript:assembleMainComponents $@

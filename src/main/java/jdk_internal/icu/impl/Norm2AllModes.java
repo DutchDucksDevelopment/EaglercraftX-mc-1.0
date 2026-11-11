@@ -274,7 +274,7 @@ public final class Norm2AllModes {
 		private Norm2AllModesSingleton(String name) {
 			try {
 				@SuppressWarnings("deprecation")
-				String DATA_FILE_NAME = "/assets/eagler/icudt/" + name + ".nrm";
+				String DATA_FILE_NAME = "/eagler/icudt/" + name + ".nrm";
 				NormalizerImpl impl = new NormalizerImpl().load(DATA_FILE_NAME);
 				allModes = new Norm2AllModes(impl);
 			} catch (RuntimeException e) {

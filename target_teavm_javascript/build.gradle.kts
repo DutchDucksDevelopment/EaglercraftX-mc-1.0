@@ -23,8 +23,9 @@ java {
 sourceSets {
 	named("main") {
 		java.srcDirs(
-			"../src/teavm/java",
-			"../src/teavm-boot-menu/java"
+			"../src/main/java",
+			"../src/game/java",
+			"../src/teavm/java"
 		)
 		resources.srcDirs(
 			"../src/teavm/resources"
@@ -36,27 +37,28 @@ dependencies {
 	teavm(teavm.libs.jso)
 	teavm(teavm.libs.jsoApis)
 	compileOnly("org.teavm:teavm-core:0.9.2") // workaround for a few hacks
-	implementation(rootProject)
 	implementation(libs.jorbis)
 	implementation(libs.bundles.common)
+	implementation(fileTree("../gradle/jars") { include("*.jar") })
 }
 
 val jsFolder = "javascript"
 val jsFileName = "classes.js"
+val debug = project.hasProperty("debug")
 
 teavm.js {
-	obfuscated = true
+	obfuscated = !debug
 	sourceMap = true
 	targetFileName = "../$jsFileName"
-	optimization = OptimizationLevel.BALANCED // Change to "AGGRESSIVE" for release
+	optimization = OptimizationLevel.valueOf(if (debug) "NONE" else "AGGRESSIVE")
 	outOfProcess = false
 	fastGlobalAnalysis = false
 	processMemory = 512
 	entryPointName.set("main")
-	mainClass = "net.lax1dude.eaglercraft.v1_8.internal.teavm.MainClass"
+	mainClass = "net.lax1dude.eaglercraft.internal.teavm.MainClass"
 	outputDir = file(jsFolder)
 	properties = mapOf("java.util.TimeZone.autodetect" to "true")
-	debugInformation = false
+	debugInformation = true
 }
 
 tasks.withType<JavaCompile> {
@@ -77,6 +79,7 @@ tasks.named<GenerateJavaScriptTask>("generateJavaScript") {
 					0,
 					j + 34
 			) + "\n" + file("$jsFolder/ES6ShimScript.txt").readText() + "\n" + dest.substring(j + 34)
+			dest = dest.replace("--0", "-0")
 			phile.writeText(dest)
 		} catch (ex: Exception) {
 			if (!teavm.js.obfuscated.get()) {
@@ -100,7 +103,7 @@ eaglercraftBuild {
 			mainOutput = file("$jsFolder/EaglercraftX_1.8_Offline_en_US.html")
 			internationalOutput = file("$jsFolder/EaglercraftX_1.8_Offline_International.html")
 		}.apply {
-			epkSources = file("../desktopRuntime/resources")
+			epkSources = file("../resources")
 			epkOutput = file("$jsFolder/assets.epk")
 
 			languageMetadataInput = file("$jsFolder/lang")

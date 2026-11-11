@@ -41,8 +41,8 @@ import java.nio.ByteOrder;
 import java.util.Arrays;
 
 import jdk_internal.icu.util.VersionInfo;
-import net.lax1dude.eaglercraft.v1_8.EagRuntime;
-import net.lax1dude.eaglercraft.v1_8.HString;
+import net.lax1dude.eaglercraft.EagRuntime;
+import net.lax1dude.eaglercraft.HString;
 
 public final class ICUBinary {
 
