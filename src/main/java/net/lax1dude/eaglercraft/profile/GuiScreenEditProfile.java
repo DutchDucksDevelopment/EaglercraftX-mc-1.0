@@ -100,6 +100,7 @@ public class GuiScreenEditProfile extends GuiScreen {
 		this.username = new GuiTextField(this, this.fontRenderer, this.width / 2 - 20 + 1, this.height / 6 + 24 + 1 + trans, 138, 20, "");
 		this.username.setText(EaglerProfile.getName());
 		this.username.setMaxStringLength(16);
+		this.username.setFocused(true);
 		selectedSlot = EaglerProfile.presetSkinId == -1 ? EaglerProfile.customSkinId : (EaglerProfile.presetSkinId + EaglerProfile.skins.size());
 		this.controlList.add(new GuiButton(200, this.width / 2 - 100, this.height / 6 + 168, I18n.format("gui.done")));
 		//this.controlList.add(new GuiButton(2, this.width / 2 - 21, this.height / 6 + 110, 71, 20, I18n.format("profile.addSkin")));
