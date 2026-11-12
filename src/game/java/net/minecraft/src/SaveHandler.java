@@ -64,7 +64,13 @@ public class SaveHandler implements ISaveHandler {
 	}
 
 	public IChunkLoader getChunkLoader(WorldProvider var1) {
-		throw new RuntimeException("Old Chunk Storage is no longer supported.");
+		if(var1 instanceof WorldProviderHell) {
+			return new ChunkLoader(new VFile2(this.saveDirectory, "DIM-1"), true);
+		} else if(var1 instanceof WorldProviderEnd) {
+			return new ChunkLoader(new VFile2(this.saveDirectory, "DIM1"), true);
+		} else {
+			return new ChunkLoader(this.saveDirectory, true);
+		}
 	}
 
 	public WorldInfo loadWorldInfo() {
