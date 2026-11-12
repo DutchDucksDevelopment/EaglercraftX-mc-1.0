@@ -8,6 +8,7 @@ public class ServerNBTStorage {
    public String playerCount;
    public String motd;
    public long lag;
+   public long pingSentTime;
    public boolean polled = false;
 
    public ServerNBTStorage(String var1, String var2) {

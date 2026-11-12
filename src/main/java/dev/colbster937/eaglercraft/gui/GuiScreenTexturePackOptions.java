@@ -37,7 +37,7 @@ public class GuiScreenTexturePackOptions extends GuiYesNo {
     }
 
     @Override
-    public void confirmClicked(boolean val, int id) {
+    public void deleteWorld(boolean val, int id) {
       Minecraft mc = Minecraft.getMinecraft();
       if (val) {
         pack.delete(mc.loadingScreen);
