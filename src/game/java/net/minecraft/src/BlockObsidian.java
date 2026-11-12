@@ -1,17 +1,19 @@
 package net.minecraft.src;
 
-import net.lax1dude.eaglercraft.Random;
+import java.util.Random;
+import net.minecraft.src.Block;
+import net.minecraft.src.BlockStone;
 
 public class BlockObsidian extends BlockStone {
-	public BlockObsidian(int var1, int var2) {
-		super(var1, var2);
-	}
+   public BlockObsidian(int var1, int var2) {
+      super(var1, var2);
+   }
 
-	public int quantityDropped(Random var1) {
-		return 1;
-	}
+   public int quantityDropped(Random var1) {
+      return 1;
+   }
 
-	public int idDropped(int var1, Random var2, int var3) {
-		return Block.obsidian.blockID;
-	}
+   public int idDropped(int var1, Random var2, int var3) {
+      return Block.obsidian.blockID;
+   }
 }

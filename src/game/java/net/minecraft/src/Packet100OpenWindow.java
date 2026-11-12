@@ -3,32 +3,34 @@ package net.minecraft.src;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
+import net.minecraft.src.NetHandler;
+import net.minecraft.src.Packet;
 
 public class Packet100OpenWindow extends Packet {
-	public int windowId;
-	public int inventoryType;
-	public String windowTitle;
-	public int slotsCount;
+   public int windowId;
+   public int inventoryType;
+   public String windowTitle;
+   public int slotsCount;
 
-	public void processPacket(NetHandler var1) {
-		var1.handleOpenWindow(this);
-	}
+   public void processPacket(NetHandler var1) {
+      var1.handleOpenWindow(this);
+   }
 
-	public void readPacketData(DataInputStream var1) throws IOException {
-		this.windowId = var1.readByte() & 255;
-		this.inventoryType = var1.readByte() & 255;
-		this.windowTitle = readString(var1, 32);
-		this.slotsCount = var1.readByte() & 255;
-	}
+   public void readPacketData(DataInputStream var1) throws IOException {
+      this.windowId = var1.readByte();
+      this.inventoryType = var1.readByte();
+      this.windowTitle = readString(var1, 16);
+      this.slotsCount = var1.readByte();
+   }
 
-	public void writePacketData(DataOutputStream var1) throws IOException {
-		var1.writeByte(this.windowId & 255);
-		var1.writeByte(this.inventoryType & 255);
-		writeString(this.windowTitle, var1);
-		var1.writeByte(this.slotsCount & 255);
-	}
+   public void writePacketData(DataOutputStream var1) throws IOException {
+      var1.writeByte(this.windowId);
+      var1.writeByte(this.inventoryType);
+      writeString(this.windowTitle, var1);
+      var1.writeByte(this.slotsCount);
+   }
 
-	public int getPacketSize() {
-		return 3 + this.windowTitle.length();
-	}
+   public int getPacketSize() {
+      return 3 + this.windowTitle.length();
+   }
 }

@@ -1,27 +1,39 @@
 package net.minecraft.src;
 
+import net.minecraft.src.BiomeCache;
+import net.minecraft.src.BiomeGenBase;
+
 public class BiomeCacheBlock {
-	public float[] temperatureValues;
-	public float[] rainfallValues;
-	public BiomeGenBase[] biomes;
-	public int xPosition;
-	public int zPosition;
-	public long lastAccessTime;
-	final BiomeCache biomeCache;
+   public float[] field_35659_a;
+   public float[] field_35657_b;
+   public BiomeGenBase[] field_35658_c;
+   public int field_35655_d;
+   public int field_35656_e;
+   public long field_35653_f;
+   // $FF: synthetic field
+   final BiomeCache field_35654_g;
 
-	public BiomeCacheBlock(BiomeCache var1, int var2, int var3) {
-		this.biomeCache = var1;
-		this.temperatureValues = new float[256];
-		this.rainfallValues = new float[256];
-		this.biomes = new BiomeGenBase[256];
-		this.xPosition = var2;
-		this.zPosition = var3;
-		BiomeCache.getChunkManager(var1).getTemperatures(this.temperatureValues, var2 << 4, var3 << 4, 16, 16);
-		BiomeCache.getChunkManager(var1).getRainfall(this.rainfallValues, var2 << 4, var3 << 4, 16, 16);
-		BiomeCache.getChunkManager(var1).getBiomeGenAt(this.biomes, var2 << 4, var3 << 4, 16, 16, false);
-	}
+   public BiomeCacheBlock(BiomeCache var1, int var2, int var3) {
+      this.field_35654_g = var1;
+      this.field_35659_a = new float[256];
+      this.field_35657_b = new float[256];
+      this.field_35658_c = new BiomeGenBase[256];
+      this.field_35655_d = var2;
+      this.field_35656_e = var3;
+      BiomeCache.getWorldChunkManager(var1).getTemperatures(this.field_35659_a, var2 << 4, var3 << 4, 16, 16);
+      BiomeCache.getWorldChunkManager(var1).getRainfall(this.field_35657_b, var2 << 4, var3 << 4, 16, 16);
+      BiomeCache.getWorldChunkManager(var1).func_35555_a(this.field_35658_c, var2 << 4, var3 << 4, 16, 16, false);
+   }
 
-	public BiomeGenBase getBiomeGenAt(int var1, int var2) {
-		return this.biomes[var1 & 15 | (var2 & 15) << 4];
-	}
+   public BiomeGenBase func_35651_a(int var1, int var2) {
+      return this.field_35658_c[var1 & 15 | (var2 & 15) << 4];
+   }
+
+   public float func_35650_b(int var1, int var2) {
+      return this.field_35659_a[var1 & 15 | (var2 & 15) << 4];
+   }
+
+   public float func_35652_c(int var1, int var2) {
+      return this.field_35657_b[var1 & 15 | (var2 & 15) << 4];
+   }
 }

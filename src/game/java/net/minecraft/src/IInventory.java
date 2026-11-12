@@ -1,25 +1,26 @@
 package net.minecraft.src;
 
+import net.minecraft.src.EntityPlayer;
+import net.minecraft.src.ItemStack;
+
 public interface IInventory {
-	int getSizeInventory();
+   int getSizeInventory();
 
-	ItemStack getStackInSlot(int var1);
+   ItemStack getStackInSlot(int var1);
 
-	ItemStack decrStackSize(int var1, int var2);
+   ItemStack decrStackSize(int var1, int var2);
 
-	ItemStack getStackInSlotOnClosing(int var1);
+   void setInventorySlotContents(int var1, ItemStack var2);
 
-	void setInventorySlotContents(int var1, ItemStack var2);
+   String getInvName();
 
-	String getInvName();
+   int getInventoryStackLimit();
 
-	int getInventoryStackLimit();
+   void onInventoryChanged();
 
-	void onInventoryChanged();
+   boolean isUseableByPlayer(EntityPlayer var1);
 
-	boolean isUseableByPlayer(EntityPlayer var1);
+   void openChest();
 
-	void openChest();
-
-	void closeChest();
+   void closeChest();
 }

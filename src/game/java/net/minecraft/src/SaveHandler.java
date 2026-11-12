@@ -96,7 +96,7 @@ public class SaveHandler implements ISaveHandler {
 	}
 
 	public void saveWorldInfoAndPlayer(WorldInfo var1, List var2) {
-		NBTTagCompound var3 = var1.getNBTTagCompoundWithPlayers(var2);
+		NBTTagCompound var3 = var1.getNBTTagCompoundWithPlayer(var2);
 		NBTTagCompound var4 = new NBTTagCompound();
 		var4.setTag("Data", var3);
 

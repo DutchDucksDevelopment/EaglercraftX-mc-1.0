@@ -1,26 +1,32 @@
 package net.minecraft.src;
 
+import net.minecraft.src.FontRenderer;
+import net.minecraft.src.RenderEngine;
+import net.minecraft.src.TileEntity;
+import net.minecraft.src.TileEntityRenderer;
+import net.minecraft.src.World;
+
 public abstract class TileEntitySpecialRenderer {
-	protected TileEntityRenderer tileEntityRenderer;
+   protected TileEntityRenderer tileEntityRenderer;
 
-	public abstract void renderTileEntityAt(TileEntity var1, double var2, double var4, double var6, float var8);
+   public abstract void renderTileEntityAt(TileEntity var1, double var2, double var4, double var6, float var8);
 
-	protected void bindTextureByName(String var1) {
-		RenderEngine var2 = this.tileEntityRenderer.renderEngine;
-		if(var2 != null) {
-			var2.bindTexture(var2.getTexture(var1));
-		}
+   protected void bindTextureByName(String var1) {
+      RenderEngine var2 = this.tileEntityRenderer.renderEngine;
+      if(var2 != null) {
+         var2.bindTexture(var2.getTexture(var1));
+      }
 
-	}
+   }
 
-	public void setTileEntityRenderer(TileEntityRenderer var1) {
-		this.tileEntityRenderer = var1;
-	}
+   public void setTileEntityRenderer(TileEntityRenderer var1) {
+      this.tileEntityRenderer = var1;
+   }
 
-	public void cacheSpecialRenderInfo(World var1) {
-	}
+   public void func_31069_a(World var1) {
+   }
 
-	public FontRenderer getFontRenderer() {
-		return this.tileEntityRenderer.getFontRenderer();
-	}
+   public FontRenderer getFontRenderer() {
+      return this.tileEntityRenderer.getFontRenderer();
+   }
 }

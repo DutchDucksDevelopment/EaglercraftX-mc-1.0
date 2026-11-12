@@ -112,18 +112,18 @@ public class StatFileWriter {
 				Entry var9 = (Entry)var8.entrySet().iterator().next();
 				int var10 = Integer.parseInt(((JsonStringNode)var9.getKey()).getText());
 				int var11 = Integer.parseInt(((JsonNode)var9.getValue()).getText());
-				StatBase var12 = StatList.getOneShotStat(var10);
+				StatBase var12 = StatList.func_27361_a(var10);
 				if(var12 == null) {
 					System.out.println(var10 + " is not a valid stat");
 				} else {
-					var3.append(StatList.getOneShotStat(var10).statGuid).append(",");
+					var3.append(StatList.func_27361_a(var10).statGuid).append(",");
 					var3.append(var11).append(",");
 					var1.put(var12, Integer.valueOf(var11));
 				}
 			}
 
 			MD5String var14 = new MD5String(var2);
-			String var15 = var14.getMD5String(var3.toString());
+			String var15 = var14.func_27369_a(var3.toString());
 			if(!var15.equals(var4.getStringValue(new Object[]{"checksum"}))) {
 				System.out.println("CHECKSUM MISMATCH");
 				return null;
@@ -169,7 +169,7 @@ public class StatFileWriter {
 
 		MD5String var8 = new MD5String(var1);
 		var3.append("\r\n  ],\r\n");
-		var3.append("  \"checksum\":\"").append(var8.getMD5String(var4.toString())).append("\"\r\n");
+		var3.append("  \"checksum\":\"").append(var8.func_27369_a(var4.toString())).append("\"\r\n");
 		var3.append("}");
 		return var3.toString();
 	}

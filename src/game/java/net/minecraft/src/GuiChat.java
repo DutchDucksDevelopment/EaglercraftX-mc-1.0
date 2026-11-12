@@ -1,239 +1,73 @@
 package net.minecraft.src;
 
-import java.net.URI;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
+import net.minecraft.src.ChatAllowedCharacters;
+import net.minecraft.src.GuiScreen;
 import org.lwjgl.input.Keyboard;
-import org.lwjgl.input.Mouse;
-
-import dev.colbster937.eaglercraft.utils.I18n;
-import dev.colbster937.eaglercraft.utils.ScuffedUtils;
-import net.lax1dude.eaglercraft.EagRuntime;
 
 public class GuiChat extends GuiScreen {
-	private String field_50062_b = "";
-	private int field_50063_c = -1;
-	private boolean field_50060_d = false;
-	private String field_50061_e = "";
-	private String field_50059_f = "";
-	private int field_50067_h = 0;
-	private List field_50068_i = new ArrayList();
-	private URI field_50065_j = null;
-	protected GuiTextField field_50064_a;
-	private String field_50066_k = "";
+   protected String message = "";
+   private int updateCounter = 0;
+   private static final String allowedCharacters = ChatAllowedCharacters.allowedCharacters;
 
-	public GuiChat() {
-	}
+   public void initGui() {
+      Keyboard.enableRepeatEvents(true);
+   }
 
-	public GuiChat(String var1) {
-		this.field_50066_k = var1;
-	}
+   public void onGuiClosed() {
+      Keyboard.enableRepeatEvents(false);
+   }
 
-	public void initGui() {
-		Keyboard.enableRepeatEvents(true);
-		if (!(this instanceof GuiSleepMP)) this.controlList.add(new GuiButton(0, this.width - 100, 3, 97, 20, I18n.format("chat.exit")));
-		this.field_50063_c = this.mc.ingameGUI.func_50013_c().size();
-		this.field_50064_a = new GuiTextField(this.fontRenderer, 4, this.height - 12, this.width - 4, 12);
-		this.field_50064_a.setMaxStringLength(100);
-		this.field_50064_a.func_50027_a(false);
-		this.field_50064_a.func_50033_b(true);
-		this.field_50064_a.setText(this.field_50066_k);
-		this.field_50064_a.func_50026_c(false);
-	}
+   public void updateScreen() {
+      ++this.updateCounter;
+   }
 
-	public void onGuiClosed() {
-		Keyboard.enableRepeatEvents(false);
-		this.mc.ingameGUI.func_50014_d();
-	}
+   protected void keyTyped(char var1, int var2) {
+      if(var2 == 1) {
+         this.mc.displayGuiScreen((GuiScreen)null);
+      } else if(var2 == 28) {
+         String var3 = this.message.trim();
+         if(var3.length() > 0) {
+            String var4 = this.message.trim();
+            if(!this.mc.lineIsCommand(var4)) {
+               this.mc.thePlayer.sendChatMessage(var4);
+            }
+         }
 
-	public void updateScreen() {
-		this.field_50064_a.updateCursorCounter();
-	}
+         this.mc.displayGuiScreen((GuiScreen)null);
+      } else {
+         if(var2 == 14 && this.message.length() > 0) {
+            this.message = this.message.substring(0, this.message.length() - 1);
+         }
 
-	protected void keyTyped(char var1, int var2) {
-		if(var2 == 15) {
-			this.completePlayerName();
-		} else {
-			this.field_50060_d = false;
-		}
+         if(allowedCharacters.indexOf(var1) >= 0 && this.message.length() < 100) {
+            this.message = this.message + var1;
+         }
 
-		if(var2 == 1) {
-			this.mc.displayGuiScreen((GuiScreen)null);
-		} else if(var2 == 28) {
-			String var3 = this.field_50064_a.getText().trim();
-			if(var3.length() > 0 && !this.mc.lineIsCommand(var3)) {
-				this.mc.thePlayer.sendChatMessage(var3);
-			}
+      }
+   }
 
-			this.mc.displayGuiScreen((GuiScreen)null);
-		} else if (var2 == Keyboard.KEY_V && ScuffedUtils.isCtrlKeyDown()) {
-			String clip = getClipboardString();
-			if (clip == null) clip = "";
-			String txt = this.field_50064_a.getText() + clip;
-			if (txt.length() > 100) txt = txt.substring(0, 100);
-			this.field_50064_a.setText(txt);
-			return;
-		} else if(var2 == 200) {
-			this.func_50058_a(-1);
-		} else if(var2 == 208) {
-			this.func_50058_a(1);
-		} else if(var2 == 201) {
-			this.mc.ingameGUI.func_50011_a(19);
-		} else if(var2 == 209) {
-			this.mc.ingameGUI.func_50011_a(-19);
-		} else {
-    	if (var1 == ' ') {
-				String txt = this.field_50064_a.getText();
-				if (txt.length() < 100) this.field_50064_a.setText(txt + " ");
-			} else {
-				this.field_50064_a.func_50037_a(var1, var2);
-			}
-		}
+   public void drawScreen(int var1, int var2, float var3) {
+      this.drawRect(2, this.height - 14, this.width - 2, this.height - 2, Integer.MIN_VALUE);
+      this.drawString(this.fontRenderer, "> " + this.message + (this.updateCounter / 6 % 2 == 0?"_":""), 4, this.height - 12, 14737632);
+      super.drawScreen(var1, var2, var3);
+   }
 
-	}
+   protected void mouseClicked(int var1, int var2, int var3) {
+      if(var3 == 0) {
+         if(this.mc.ingameGUI.field_933_a != null) {
+            if(this.message.length() > 0 && !this.message.endsWith(" ")) {
+               this.message = this.message + " ";
+            }
 
-	public void handleMouseInput() {
-		super.handleMouseInput();
-		int var1 = Mouse.getEventDWheel();
-		if(var1 != 0) {
-			if(var1 > 1) {
-				var1 = 1;
-			}
+            this.message = this.message + this.mc.ingameGUI.field_933_a;
+            byte var4 = 100;
+            if(this.message.length() > var4) {
+               this.message = this.message.substring(0, var4);
+            }
+         } else {
+            super.mouseClicked(var1, var2, var3);
+         }
+      }
 
-			if(var1 < -1) {
-				var1 = -1;
-			}
-
-			if(!func_50049_m()) {
-				var1 *= 7;
-			}
-
-			this.mc.ingameGUI.func_50011_a(var1);
-		}
-
-	}
-
-	protected void mouseClicked(int var1, int var2, int var3) {
-		if(var3 == 0) {
-			ChatClickData var4 = this.mc.ingameGUI.func_50012_a(Mouse.getX(), Mouse.getY());
-			if(var4 != null) {
-				URI var5 = var4.func_50089_b();
-				if(var5 != null) {
-					this.field_50065_j = var5;
-					this.mc.displayGuiScreen(new GuiChatConfirmLink(this, this, var4.func_50088_a(), 0, var4));
-					return;
-				}
-			}
-		}
-
-		this.field_50064_a.mouseClicked(var1, var2, var3);
-		super.mouseClicked(var1, var2, var3);
-	}
-
-	public void confirmClicked(boolean var1, int var2) {
-		if(var2 == 0) {
-			if(var1) {
-				EagRuntime.openLink(this.field_50065_j.toString());
-			}
-
-			this.field_50065_j = null;
-			this.mc.displayGuiScreen(this);
-		}
-
-	}
-
-	public void completePlayerName() {
-		Iterator var2;
-		GuiPlayerInfo var3;
-		if(this.field_50060_d) {
-			this.field_50064_a.func_50021_a(-1);
-			if(this.field_50067_h >= this.field_50068_i.size()) {
-				this.field_50067_h = 0;
-			}
-		} else {
-			int var1 = this.field_50064_a.func_50028_c(-1);
-			if(this.field_50064_a.func_50035_h() - var1 < 1) {
-				return;
-			}
-
-			this.field_50068_i.clear();
-			this.field_50061_e = this.field_50064_a.getText().substring(var1);
-			this.field_50059_f = this.field_50061_e.toLowerCase();
-			var2 = ((EntityClientPlayerMP)this.mc.thePlayer).sendQueue.playerNames.iterator();
-
-			while(var2.hasNext()) {
-				var3 = (GuiPlayerInfo)var2.next();
-				if(var3.nameStartsWith(this.field_50059_f)) {
-					this.field_50068_i.add(var3);
-				}
-			}
-
-			if(this.field_50068_i.size() == 0) {
-				return;
-			}
-
-			this.field_50060_d = true;
-			this.field_50067_h = 0;
-			this.field_50064_a.func_50020_b(var1 - this.field_50064_a.func_50035_h());
-		}
-
-		if(this.field_50068_i.size() > 1) {
-			StringBuilder var4 = new StringBuilder();
-
-			for(var2 = this.field_50068_i.iterator(); var2.hasNext(); var4.append(var3.name)) {
-				var3 = (GuiPlayerInfo)var2.next();
-				if(var4.length() > 0) {
-					var4.append(", ");
-				}
-			}
-
-			this.mc.ingameGUI.addChatMessage(var4.toString());
-		}
-
-		this.field_50064_a.func_50031_b(((GuiPlayerInfo)this.field_50068_i.get(this.field_50067_h++)).name);
-	}
-
-	public void func_50058_a(int var1) {
-		int var2 = this.field_50063_c + var1;
-		int var3 = this.mc.ingameGUI.func_50013_c().size();
-		if(var2 < 0) {
-			var2 = 0;
-		}
-
-		if(var2 > var3) {
-			var2 = var3;
-		}
-
-		if(var2 != this.field_50063_c) {
-			if(var2 == var3) {
-				this.field_50063_c = var3;
-				this.field_50064_a.setText(this.field_50062_b);
-			} else {
-				if(this.field_50063_c == var3) {
-					this.field_50062_b = this.field_50064_a.getText();
-				}
-
-				this.field_50064_a.setText((String)this.mc.ingameGUI.func_50013_c().get(var2));
-				this.field_50063_c = var2;
-			}
-		}
-	}
-
-	public void drawScreen(int var1, int var2, float var3) {
-		drawRect(2, this.height - 14, this.width - 2, this.height - 2, Integer.MIN_VALUE);
-		this.field_50064_a.drawTextBox();
-		super.drawScreen(var1, var2, var3);
-	}
-
-	protected void actionPerformed(GuiButton var1) {
-		if (var1.id == 0) {
-			this.mc.displayGuiScreen(null);
-			this.mc.setIngameFocus();
-		}
-	}
-
-	public boolean doesGuiPauseGame() {
-		return false;
-	}
+   }
 }

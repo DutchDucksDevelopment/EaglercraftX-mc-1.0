@@ -7,121 +7,132 @@ import java.io.DataInput;
 import java.io.DataInputStream;
 import java.io.DataOutput;
 import java.io.DataOutputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.zip.GZIPInputStream;
 import java.util.zip.GZIPOutputStream;
-
-import net.lax1dude.eaglercraft.internal.vfs2.VFile2;
+import net.minecraft.src.NBTBase;
+import net.minecraft.src.NBTTagCompound;
 
 public class CompressedStreamTools {
-	public static NBTTagCompound readCompressed(InputStream var0) throws IOException {
-		DataInputStream var1 = new DataInputStream(new BufferedInputStream(new GZIPInputStream(var0)));
+   public static NBTTagCompound readCompressed(InputStream var0) throws IOException {
+      return loadGzippedCompoundFromOutputStream(var0);
+   }
 
-		NBTTagCompound var2;
-		try {
-			var2 = read((DataInput)var1);
-		} finally {
-			var1.close();
-		}
+   public static void writeCompressed(NBTTagCompound var0, OutputStream var1) throws IOException {
+      writeGzippedCompoundToOutputStream(var0, var1);
+   }
 
-		return var2;
-	}
+   public static NBTTagCompound loadGzippedCompoundFromOutputStream(InputStream var0) throws IOException {
+      DataInputStream var1 = new DataInputStream(new BufferedInputStream(new GZIPInputStream(var0)));
 
-	public static void writeCompressed(NBTTagCompound var0, OutputStream var1) throws IOException {
-		DataOutputStream var2 = new DataOutputStream(new GZIPOutputStream(var1));
+      NBTTagCompound var2;
+      try {
+         var2 = func_1141_a(var1);
+      } finally {
+         var1.close();
+      }
 
-		try {
-			write(var0, (DataOutput)var2);
-		} finally {
-			var2.close();
-		}
+      return var2;
+   }
 
-	}
+   public static void writeGzippedCompoundToOutputStream(NBTTagCompound var0, OutputStream var1) throws IOException {
+      DataOutputStream var2 = new DataOutputStream(new GZIPOutputStream(var1));
 
-	public static NBTTagCompound decompress(byte[] var0) throws IOException {
-		DataInputStream var1 = new DataInputStream(new BufferedInputStream(new GZIPInputStream(new ByteArrayInputStream(var0))));
+      try {
+         writeTo(var0, var2);
+      } finally {
+         var2.close();
+      }
 
-		NBTTagCompound var2;
-		try {
-			var2 = read((DataInput)var1);
-		} finally {
-			var1.close();
-		}
+   }
 
-		return var2;
-	}
+   public static NBTTagCompound func_40592_a(byte[] var0) throws IOException {
+      DataInputStream var1 = new DataInputStream(new BufferedInputStream(new GZIPInputStream(new ByteArrayInputStream(var0))));
 
-	public static byte[] compress(NBTTagCompound var0) throws IOException {
-		ByteArrayOutputStream var1 = new ByteArrayOutputStream();
-		DataOutputStream var2 = new DataOutputStream(new GZIPOutputStream(var1));
+      NBTTagCompound var2;
+      try {
+         var2 = func_1141_a(var1);
+      } finally {
+         var1.close();
+      }
 
-		try {
-			write(var0, (DataOutput)var2);
-		} finally {
-			var2.close();
-		}
+      return var2;
+   }
 
-		return var1.toByteArray();
-	}
+   public static byte[] func_40591_a(NBTTagCompound var0) throws IOException {
+      ByteArrayOutputStream var1 = new ByteArrayOutputStream();
+      DataOutputStream var2 = new DataOutputStream(new GZIPOutputStream(var1));
 
-	public static void safeWrite(NBTTagCompound var0, VFile2 var1) throws IOException {
-		VFile2 var2 = new VFile2(var1.getPath() + "_tmp");
-		if(var2.exists()) {
-			var2.delete();
-		}
+      try {
+         writeTo(var0, var2);
+      } finally {
+         var2.close();
+      }
 
-		write(var0, var2);
-		if(var1.exists()) {
-			var1.delete();
-		}
+      return var1.toByteArray();
+   }
 
-		if(var1.exists()) {
-			throw new IOException("Failed to delete " + var1);
-		} else {
-			var2.renameTo(var1);
-		}
-	}
+   public static void func_35621_a(NBTTagCompound var0, File var1) throws IOException {
+      File var2 = new File(var1.getAbsolutePath() + "_tmp");
+      if(var2.exists()) {
+         var2.delete();
+      }
 
-	public static void write(NBTTagCompound var0, VFile2 var1) throws IOException {
-		DataOutputStream var2 = new DataOutputStream(var1.getOutputStream());
+      func_35620_b(var0, var2);
+      if(var1.exists()) {
+         var1.delete();
+      }
 
-		try {
-			write(var0, (DataOutput)var2);
-		} finally {
-			var2.close();
-		}
+      if(var1.exists()) {
+         throw new IOException("Failed to delete " + var1);
+      } else {
+         var2.renameTo(var1);
+      }
+   }
 
-	}
+   public static void func_35620_b(NBTTagCompound var0, File var1) throws IOException {
+      DataOutputStream var2 = new DataOutputStream(new FileOutputStream(var1));
 
-	public static NBTTagCompound read(VFile2 var0) throws IOException {
-		if(!var0.exists()) {
-			return null;
-		} else {
-			DataInputStream var1 = new DataInputStream(var0.getInputStream());
+      try {
+         writeTo(var0, var2);
+      } finally {
+         var2.close();
+      }
 
-			NBTTagCompound var2;
-			try {
-				var2 = read((DataInput)var1);
-			} finally {
-				var1.close();
-			}
+   }
 
-			return var2;
-		}
-	}
+   public static NBTTagCompound func_35622_a(File var0) throws IOException {
+      if(!var0.exists()) {
+         return null;
+      } else {
+         DataInputStream var1 = new DataInputStream(new FileInputStream(var0));
 
-	public static NBTTagCompound read(DataInput var0) throws IOException {
-		NBTBase var1 = NBTBase.readNamedTag(var0);
-		if(var1 instanceof NBTTagCompound) {
-			return (NBTTagCompound)var1;
-		} else {
-			throw new IOException("Root tag must be a named compound tag");
-		}
-	}
+         NBTTagCompound var2;
+         try {
+            var2 = func_1141_a(var1);
+         } finally {
+            var1.close();
+         }
 
-	public static void write(NBTTagCompound var0, DataOutput var1) throws IOException {
-		NBTBase.writeNamedTag(var0, var1);
-	}
+         return var2;
+      }
+   }
+
+   public static NBTTagCompound func_1141_a(DataInput var0) throws IOException {
+      NBTBase var1 = NBTBase.readTag(var0);
+      if(var1 instanceof NBTTagCompound) {
+         return (NBTTagCompound)var1;
+      } else {
+         throw new IOException("Root tag must be a named compound tag");
+      }
+   }
+
+   public static void writeTo(NBTTagCompound var0, DataOutput var1) throws IOException {
+      NBTBase.writeTag(var0, var1);
+   }
 }

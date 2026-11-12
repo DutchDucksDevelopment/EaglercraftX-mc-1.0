@@ -2,173 +2,204 @@ package net.minecraft.src;
 
 import java.util.ArrayList;
 import java.util.List;
-import net.lax1dude.eaglercraft.Random;
+import java.util.Random;
+import net.minecraft.src.BiomeCache;
+import net.minecraft.src.BiomeGenBase;
+import net.minecraft.src.ChunkCoordIntPair;
+import net.minecraft.src.ChunkPosition;
+import net.minecraft.src.GenLayer;
+import net.minecraft.src.IntCache;
+import net.minecraft.src.World;
 
 public class WorldChunkManager {
-	private GenLayer genBiomes;
-	private GenLayer biomeIndexLayer;
-	private BiomeCache biomeCache;
-	private List biomesToSpawnIn;
+   private GenLayer field_34903_b;
+   private GenLayer field_34902_c;
+   private GenLayer temperatureLayer;
+   private GenLayer rainfallLayer;
+   private BiomeCache biomeCache;
+   private List biomesToSpawnIn;
+   public BiomeGenBase[] field_4195_d;
+   public float[] field_40541_b;
 
-	protected WorldChunkManager() {
-		this.biomeCache = new BiomeCache(this);
-		this.biomesToSpawnIn = new ArrayList();
-		this.biomesToSpawnIn.add(BiomeGenBase.forest);
-		this.biomesToSpawnIn.add(BiomeGenBase.plains);
-		this.biomesToSpawnIn.add(BiomeGenBase.taiga);
-		this.biomesToSpawnIn.add(BiomeGenBase.taigaHills);
-		this.biomesToSpawnIn.add(BiomeGenBase.forestHills);
-		this.biomesToSpawnIn.add(BiomeGenBase.jungle);
-		this.biomesToSpawnIn.add(BiomeGenBase.jungleHills);
-	}
+   protected WorldChunkManager() {
+      this.biomeCache = new BiomeCache(this);
+      this.biomesToSpawnIn = new ArrayList();
+      this.biomesToSpawnIn.add(BiomeGenBase.forest);
+      this.biomesToSpawnIn.add(BiomeGenBase.swampland);
+      this.biomesToSpawnIn.add(BiomeGenBase.taiga);
+   }
 
-	public WorldChunkManager(long var1, WorldType var3) {
-		this();
-		GenLayer[] var4 = GenLayer.func_48425_a(var1, var3);
-		this.genBiomes = var4[0];
-		this.biomeIndexLayer = var4[1];
-	}
+   public WorldChunkManager(World var1) {
+      this();
+      GenLayer[] var2 = GenLayer.func_35497_a(var1.getWorldSeed());
+      this.field_34903_b = var2[0];
+      this.field_34902_c = var2[1];
+      this.temperatureLayer = var2[2];
+      this.rainfallLayer = var2[3];
+   }
 
-	public WorldChunkManager(World var1) {
-		this(var1.getSeed(), var1.getWorldInfo().getTerrainType());
-	}
+   public List getBiomesToSpawnIn() {
+      return this.biomesToSpawnIn;
+   }
 
-	public List getBiomesToSpawnIn() {
-		return this.biomesToSpawnIn;
-	}
+   public BiomeGenBase getBiomeGenAtChunkCoord(ChunkCoordIntPair var1) {
+      return this.getBiomeGenAt(var1.chunkXPos << 4, var1.chunkZPos << 4);
+   }
 
-	public BiomeGenBase getBiomeGenAt(int var1, int var2) {
-		return this.biomeCache.getBiomeGenAt(var1, var2);
-	}
+   public BiomeGenBase getBiomeGenAt(int var1, int var2) {
+      return this.biomeCache.func_35725_a(var1, var2);
+   }
 
-	public float[] getRainfall(float[] var1, int var2, int var3, int var4, int var5) {
-		IntCache.resetIntCache();
-		if (var1 == null || var1.length < var4 * var5) {
-			var1 = new float[var4 * var5];
-		}
+   public float func_35558_c(int var1, int var2) {
+      return this.biomeCache.func_35727_c(var1, var2);
+   }
 
-		int[] var6 = this.biomeIndexLayer.getInts(var2, var3, var4, var5);
+   public float[] getRainfall(float[] var1, int var2, int var3, int var4, int var5) {
+      IntCache.func_35268_a();
+      if(var1 == null || var1.length < var4 * var5) {
+         var1 = new float[var4 * var5];
+      }
 
-		for (int var7 = 0; var7 < var4 * var5; ++var7) {
-			float var8 = (float) BiomeGenBase.biomeList[var6[var7]].getIntRainfall() / 65536.0F;
-			if (var8 > 1.0F) {
-				var8 = 1.0F;
-			}
+      int[] var6 = this.rainfallLayer.func_35500_a(var2, var3, var4, var5);
 
-			var1[var7] = var8;
-		}
+      for(int var7 = 0; var7 < var4 * var5; ++var7) {
+         float var8 = (float)var6[var7] / 65536.0F;
+         if(var8 > 1.0F) {
+            var8 = 1.0F;
+         }
 
-		return var1;
-	}
+         var1[var7] = var8;
+      }
 
-	public float getTemperatureAtHeight(float var1, int var2) {
-		return var1;
-	}
+      return var1;
+   }
 
-	public float[] getTemperatures(float[] var1, int var2, int var3, int var4, int var5) {
-		IntCache.resetIntCache();
-		if (var1 == null || var1.length < var4 * var5) {
-			var1 = new float[var4 * var5];
-		}
+   public float func_35554_b(int var1, int var2, int var3) {
+      return this.func_40540_a(this.biomeCache.func_35722_b(var1, var3), var2);
+   }
 
-		int[] var6 = this.biomeIndexLayer.getInts(var2, var3, var4, var5);
+   public float func_40540_a(float var1, int var2) {
+      return var1;
+   }
 
-		for (int var7 = 0; var7 < var4 * var5; ++var7) {
-			float var8 = (float) BiomeGenBase.biomeList[var6[var7]].getIntTemperature() / 65536.0F;
-			if (var8 > 1.0F) {
-				var8 = 1.0F;
-			}
+   public float[] func_40539_b(int var1, int var2, int var3, int var4) {
+      this.field_40541_b = this.getTemperatures(this.field_40541_b, var1, var2, var3, var4);
+      return this.field_40541_b;
+   }
 
-			var1[var7] = var8;
-		}
+   public float[] getTemperatures(float[] var1, int var2, int var3, int var4, int var5) {
+      IntCache.func_35268_a();
+      if(var1 == null || var1.length < var4 * var5) {
+         var1 = new float[var4 * var5];
+      }
 
-		return var1;
-	}
+      int[] var6 = this.temperatureLayer.func_35500_a(var2, var3, var4, var5);
 
-	public BiomeGenBase[] getBiomesForGeneration(BiomeGenBase[] var1, int var2, int var3, int var4, int var5) {
-		IntCache.resetIntCache();
-		if (var1 == null || var1.length < var4 * var5) {
-			var1 = new BiomeGenBase[var4 * var5];
-		}
+      for(int var7 = 0; var7 < var4 * var5; ++var7) {
+         float var8 = (float)var6[var7] / 65536.0F;
+         if(var8 > 1.0F) {
+            var8 = 1.0F;
+         }
 
-		int[] var6 = this.genBiomes.getInts(var2, var3, var4, var5);
+         var1[var7] = var8;
+      }
 
-		for (int var7 = 0; var7 < var4 * var5; ++var7) {
-			var1[var7] = BiomeGenBase.biomeList[var6[var7]];
-		}
+      return var1;
+   }
 
-		return var1;
-	}
+   public BiomeGenBase[] func_35557_b(BiomeGenBase[] var1, int var2, int var3, int var4, int var5) {
+      IntCache.func_35268_a();
+      if(var1 == null || var1.length < var4 * var5) {
+         var1 = new BiomeGenBase[var4 * var5];
+      }
 
-	public BiomeGenBase[] loadBlockGeneratorData(BiomeGenBase[] var1, int var2, int var3, int var4, int var5) {
-		return this.getBiomeGenAt(var1, var2, var3, var4, var5, true);
-	}
+      int[] var6 = this.field_34903_b.func_35500_a(var2, var3, var4, var5);
 
-	public BiomeGenBase[] getBiomeGenAt(BiomeGenBase[] var1, int var2, int var3, int var4, int var5, boolean var6) {
-		IntCache.resetIntCache();
-		if (var1 == null || var1.length < var4 * var5) {
-			var1 = new BiomeGenBase[var4 * var5];
-		}
+      for(int var7 = 0; var7 < var4 * var5; ++var7) {
+         var1[var7] = BiomeGenBase.biomeList[var6[var7]];
+      }
 
-		if (var6 && var4 == 16 && var5 == 16 && (var2 & 15) == 0 && (var3 & 15) == 0) {
-			BiomeGenBase[] var9 = this.biomeCache.getCachedBiomes(var2, var3);
-			System.arraycopy(var9, 0, var1, 0, var4 * var5);
-			return var1;
-		} else {
-			int[] var7 = this.biomeIndexLayer.getInts(var2, var3, var4, var5);
+      return var1;
+   }
 
-			for (int var8 = 0; var8 < var4 * var5; ++var8) {
-				var1[var8] = BiomeGenBase.biomeList[var7[var8]];
-			}
+   public BiomeGenBase[] func_4069_a(int var1, int var2, int var3, int var4) {
+      if(var3 == 16 && var4 == 16 && (var1 & 15) == 0 && (var2 & 15) == 0) {
+         return this.biomeCache.func_35723_d(var1, var2);
+      } else {
+         this.field_4195_d = this.loadBlockGeneratorData(this.field_4195_d, var1, var2, var3, var4);
+         return this.field_4195_d;
+      }
+   }
 
-			return var1;
-		}
-	}
+   public BiomeGenBase[] loadBlockGeneratorData(BiomeGenBase[] var1, int var2, int var3, int var4, int var5) {
+      return this.func_35555_a(var1, var2, var3, var4, var5, true);
+   }
 
-	public boolean areBiomesViable(int var1, int var2, int var3, List var4) {
-		int var5 = var1 - var3 >> 2;
-		int var6 = var2 - var3 >> 2;
-		int var7 = var1 + var3 >> 2;
-		int var8 = var2 + var3 >> 2;
-		int var9 = var7 - var5 + 1;
-		int var10 = var8 - var6 + 1;
-		int[] var11 = this.genBiomes.getInts(var5, var6, var9, var10);
+   public BiomeGenBase[] func_35555_a(BiomeGenBase[] var1, int var2, int var3, int var4, int var5, boolean var6) {
+      IntCache.func_35268_a();
+      if(var1 == null || var1.length < var4 * var5) {
+         var1 = new BiomeGenBase[var4 * var5];
+      }
 
-		for (int var12 = 0; var12 < var9 * var10; ++var12) {
-			BiomeGenBase var13 = BiomeGenBase.biomeList[var11[var12]];
-			if (!var4.contains(var13)) {
-				return false;
-			}
-		}
+      if(var6 && var4 == 16 && var5 == 16 && (var2 & 15) == 0 && (var3 & 15) == 0) {
+         BiomeGenBase[] var9 = this.biomeCache.func_35723_d(var2, var3);
+         System.arraycopy(var9, 0, var1, 0, var4 * var5);
+         return var1;
+      } else {
+         int[] var7 = this.field_34902_c.func_35500_a(var2, var3, var4, var5);
 
-		return true;
-	}
+         for(int var8 = 0; var8 < var4 * var5; ++var8) {
+            var1[var8] = BiomeGenBase.biomeList[var7[var8]];
+         }
 
-	public ChunkPosition findBiomePosition(int var1, int var2, int var3, List var4, Random var5) {
-		int var6 = var1 - var3 >> 2;
-		int var7 = var2 - var3 >> 2;
-		int var8 = var1 + var3 >> 2;
-		int var9 = var2 + var3 >> 2;
-		int var10 = var8 - var6 + 1;
-		int var11 = var9 - var7 + 1;
-		int[] var12 = this.genBiomes.getInts(var6, var7, var10, var11);
-		ChunkPosition var13 = null;
-		int var14 = 0;
+         return var1;
+      }
+   }
 
-		for (int var15 = 0; var15 < var12.length; ++var15) {
-			int var16 = var6 + var15 % var10 << 2;
-			int var17 = var7 + var15 / var10 << 2;
-			BiomeGenBase var18 = BiomeGenBase.biomeList[var12[var15]];
-			if (var4.contains(var18) && (var13 == null || var5.nextInt(var14 + 1) == 0)) {
-				var13 = new ChunkPosition(var16, 0, var17);
-				++var14;
-			}
-		}
+   public boolean areBiomesViable(int var1, int var2, int var3, List var4) {
+      int var5 = var1 - var3 >> 2;
+      int var6 = var2 - var3 >> 2;
+      int var7 = var1 + var3 >> 2;
+      int var8 = var2 + var3 >> 2;
+      int var9 = var7 - var5 + 1;
+      int var10 = var8 - var6 + 1;
+      int[] var11 = this.field_34903_b.func_35500_a(var5, var6, var9, var10);
 
-		return var13;
-	}
+      for(int var12 = 0; var12 < var9 * var10; ++var12) {
+         BiomeGenBase var13 = BiomeGenBase.biomeList[var11[var12]];
+         if(!var4.contains(var13)) {
+            return false;
+         }
+      }
 
-	public void cleanupCache() {
-		this.biomeCache.cleanupCache();
-	}
+      return true;
+   }
+
+   public ChunkPosition func_35556_a(int var1, int var2, int var3, List var4, Random var5) {
+      int var6 = var1 - var3 >> 2;
+      int var7 = var2 - var3 >> 2;
+      int var8 = var1 + var3 >> 2;
+      int var9 = var2 + var3 >> 2;
+      int var10 = var8 - var6 + 1;
+      int var11 = var9 - var7 + 1;
+      int[] var12 = this.field_34903_b.func_35500_a(var6, var7, var10, var11);
+      ChunkPosition var13 = null;
+      int var14 = 0;
+
+      for(int var15 = 0; var15 < var12.length; ++var15) {
+         int var16 = var6 + var15 % var10 << 2;
+         int var17 = var7 + var15 / var10 << 2;
+         BiomeGenBase var18 = BiomeGenBase.biomeList[var12[var15]];
+         if(var4.contains(var18) && (var13 == null || var5.nextInt(var14 + 1) == 0)) {
+            var13 = new ChunkPosition(var16, 0, var17);
+            ++var14;
+         }
+      }
+
+      return var13;
+   }
+
+   public void func_35561_b() {
+      this.biomeCache.func_35724_a();
+   }
 }

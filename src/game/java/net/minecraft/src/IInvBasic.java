@@ -1,5 +1,7 @@
 package net.minecraft.src;
 
+import net.minecraft.src.InventoryBasic;
+
 public interface IInvBasic {
-	void onInventoryChanged(InventoryBasic var1);
+   void func_20134_a(InventoryBasic var1);
 }

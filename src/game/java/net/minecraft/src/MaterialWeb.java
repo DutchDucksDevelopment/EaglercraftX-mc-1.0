@@ -1,11 +1,14 @@
 package net.minecraft.src;
 
-final class MaterialWeb extends Material {
-	MaterialWeb(MapColor var1) {
-		super(var1);
-	}
+import net.minecraft.src.MapColor;
+import net.minecraft.src.Material;
 
-	public boolean blocksMovement() {
-		return false;
-	}
+class MaterialWeb extends Material {
+   MaterialWeb(MapColor var1) {
+      super(var1);
+   }
+
+   public boolean getIsSolid() {
+      return false;
+   }
 }

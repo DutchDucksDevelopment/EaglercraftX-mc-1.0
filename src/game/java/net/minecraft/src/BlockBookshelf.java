@@ -1,21 +1,24 @@
 package net.minecraft.src;
 
-import net.lax1dude.eaglercraft.Random;
+import java.util.Random;
+import net.minecraft.src.Block;
+import net.minecraft.src.Item;
+import net.minecraft.src.Material;
 
 public class BlockBookshelf extends Block {
-	public BlockBookshelf(int var1, int var2) {
-		super(var1, var2, Material.wood);
-	}
+   public BlockBookshelf(int var1, int var2) {
+      super(var1, var2, Material.wood);
+   }
 
-	public int getBlockTextureFromSide(int var1) {
-		return var1 <= 1 ? 4 : this.blockIndexInTexture;
-	}
+   public int getBlockTextureFromSide(int var1) {
+      return var1 <= 1?4:this.blockIndexInTexture;
+   }
 
-	public int quantityDropped(Random var1) {
-		return 3;
-	}
+   public int quantityDropped(Random var1) {
+      return 3;
+   }
 
-	public int idDropped(int var1, Random var2, int var3) {
-		return Item.book.shiftedIndex;
-	}
+   public int idDropped(int var1, Random var2, int var3) {
+      return Item.book.shiftedIndex;
+   }
 }

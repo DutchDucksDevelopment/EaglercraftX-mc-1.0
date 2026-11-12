@@ -3,49 +3,46 @@ package net.minecraft.src;
 import java.io.DataInput;
 import java.io.DataOutput;
 import java.io.IOException;
+import net.minecraft.src.NBTBase;
 
 public class NBTTagShort extends NBTBase {
-	public short data;
+   public short shortValue;
 
-	public NBTTagShort(String var1) {
-		super(var1);
-	}
+   public NBTTagShort(String var1) {
+      super(var1);
+   }
 
-	public NBTTagShort(String var1, short var2) {
-		super(var1);
-		this.data = var2;
-	}
+   public NBTTagShort(String var1, short var2) {
+      super(var1);
+      this.shortValue = var2;
+   }
 
-	void write(DataOutput var1) throws IOException {
-		var1.writeShort(this.data);
-	}
+   void writeTagContents(DataOutput var1) throws IOException {
+      var1.writeShort(this.shortValue);
+   }
 
-	void load(DataInput var1) throws IOException {
-		this.data = var1.readShort();
-	}
+   void readTagContents(DataInput var1) throws IOException {
+      this.shortValue = var1.readShort();
+   }
 
-	public byte getId() {
-		return (byte)2;
-	}
+   public byte getType() {
+      return (byte)2;
+   }
 
-	public String toString() {
-		return "" + this.data;
-	}
+   public String toString() {
+      return "" + this.shortValue;
+   }
 
-	public NBTBase copy() {
-		return new NBTTagShort(this.getName(), this.data);
-	}
+   public NBTBase func_40195_b() {
+      return new NBTTagShort(this.getKey(), this.shortValue);
+   }
 
-	public boolean equals(Object var1) {
-		if(super.equals(var1)) {
-			NBTTagShort var2 = (NBTTagShort)var1;
-			return this.data == var2.data;
-		} else {
-			return false;
-		}
-	}
-
-	public int hashCode() {
-		return super.hashCode() ^ this.data;
-	}
+   public boolean equals(Object var1) {
+      if(super.equals(var1)) {
+         NBTTagShort var2 = (NBTTagShort)var1;
+         return this.shortValue == var2.shortValue;
+      } else {
+         return false;
+      }
+   }
 }

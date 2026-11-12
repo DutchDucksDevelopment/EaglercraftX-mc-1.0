@@ -97,7 +97,7 @@ public class GuiScreenEditProfile extends GuiScreen {
 		super.initGui();
 		Keyboard.enableRepeatEvents(true);
 		this.screenTitle = I18n.format("profile.title");
-		this.username = new GuiTextField(this.fontRenderer, this.width / 2 - 20 + 1, this.height / 6 + 24 + 1 + trans, 138, 20);
+		this.username = new GuiTextField(this, this.fontRenderer, this.width / 2 - 20 + 1, this.height / 6 + 24 + 1 + trans, 138, 20, "");
 		this.username.setText(EaglerProfile.getName());
 		this.username.setMaxStringLength(16);
 		selectedSlot = EaglerProfile.presetSkinId == -1 ? EaglerProfile.customSkinId : (EaglerProfile.presetSkinId + EaglerProfile.skins.size());
@@ -349,7 +349,7 @@ public class GuiScreenEditProfile extends GuiScreen {
 	}
 	
 	protected void keyTyped(char par1, int par2) {
-		this.username.func_50037_a(par1, par2);
+		this.username.textboxKeyTyped(par1, par2);
 		
 		String text = username.getText();
 		if (text == null) text = "";

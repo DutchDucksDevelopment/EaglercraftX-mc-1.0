@@ -1,24 +1,75 @@
 package net.minecraft.src;
 
+import net.minecraft.src.BiomeGenBase;
+import net.minecraft.src.GenLayer;
+import net.minecraft.src.IntCache;
+
 public class GenLayerIsland extends GenLayer {
-	public GenLayerIsland(long var1) {
-		super(var1);
-	}
+   public GenLayerIsland(long var1, GenLayer var3) {
+      super(var1);
+      this.parent = var3;
+   }
 
-	public int[] getInts(int var1, int var2, int var3, int var4) {
-		int[] var5 = IntCache.getIntCache(var3 * var4);
+   public int[] func_35500_a(int var1, int var2, int var3, int var4) {
+      int var5 = var1 - 1;
+      int var6 = var2 - 1;
+      int var7 = var3 + 2;
+      int var8 = var4 + 2;
+      int[] var9 = this.parent.func_35500_a(var5, var6, var7, var8);
+      int[] var10 = IntCache.getIntCache(var3 * var4);
 
-		for(int var6 = 0; var6 < var4; ++var6) {
-			for(int var7 = 0; var7 < var3; ++var7) {
-				this.initChunkSeed((long)(var1 + var7), (long)(var2 + var6));
-				var5[var7 + var6 * var3] = this.nextInt(10) == 0 ? 1 : 0;
-			}
-		}
+      for(int var11 = 0; var11 < var4; ++var11) {
+         for(int var12 = 0; var12 < var3; ++var12) {
+            int var13 = var9[var12 + 0 + (var11 + 0) * var7];
+            int var14 = var9[var12 + 2 + (var11 + 0) * var7];
+            int var15 = var9[var12 + 0 + (var11 + 2) * var7];
+            int var16 = var9[var12 + 2 + (var11 + 2) * var7];
+            int var17 = var9[var12 + 1 + (var11 + 1) * var7];
+            this.func_35499_a((long)(var12 + var1), (long)(var11 + var2));
+            if(var17 != 0 || var13 == 0 && var14 == 0 && var15 == 0 && var16 == 0) {
+               if(var17 > 0 && (var13 == 0 || var14 == 0 || var15 == 0 || var16 == 0)) {
+                  if(this.nextInt(5) == 0) {
+                     if(var17 == BiomeGenBase.icePlains.biomeID) {
+                        var10[var12 + var11 * var3] = BiomeGenBase.frozenOcean.biomeID;
+                     } else {
+                        var10[var12 + var11 * var3] = 0;
+                     }
+                  } else {
+                     var10[var12 + var11 * var3] = var17;
+                  }
+               } else {
+                  var10[var12 + var11 * var3] = var17;
+               }
+            } else {
+               int var18 = 1;
+               int var19 = 1;
+               if(var13 != 0 && this.nextInt(var18++) == 0) {
+                  var19 = var13;
+               }
 
-		if(var1 > -var3 && var1 <= 0 && var2 > -var4 && var2 <= 0) {
-			var5[-var1 + -var2 * var3] = 1;
-		}
+               if(var14 != 0 && this.nextInt(var18++) == 0) {
+                  var19 = var14;
+               }
 
-		return var5;
-	}
+               if(var15 != 0 && this.nextInt(var18++) == 0) {
+                  var19 = var15;
+               }
+
+               if(var16 != 0 && this.nextInt(var18++) == 0) {
+                  var19 = var16;
+               }
+
+               if(this.nextInt(3) == 0) {
+                  var10[var12 + var11 * var3] = var19;
+               } else if(var19 == BiomeGenBase.icePlains.biomeID) {
+                  var10[var12 + var11 * var3] = BiomeGenBase.frozenOcean.biomeID;
+               } else {
+                  var10[var12 + var11 * var3] = 0;
+               }
+            }
+         }
+      }
+
+      return var10;
+   }
 }

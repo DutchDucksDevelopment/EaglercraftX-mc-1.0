@@ -1,17 +1,23 @@
 package net.minecraft.src;
 
+import net.minecraft.src.Empty3;
+import net.minecraft.src.Enchantment;
+import net.minecraft.src.EntityLiving;
+import net.minecraft.src.IEnchantmentModifier;
+
 final class EnchantmentModifierLiving implements IEnchantmentModifier {
-	public int livingModifier;
-	public EntityLiving entityLiving;
+   public int livingModifier;
+   public EntityLiving entityLiving;
 
-	private EnchantmentModifierLiving() {
-	}
+   private EnchantmentModifierLiving() {
+   }
 
-	public void calculateModifier(Enchantment var1, int var2) {
-		this.livingModifier += var1.calcModifierLiving(var2, this.entityLiving);
-	}
+   public void calculateModifier(Enchantment var1, int var2) {
+      this.livingModifier += var1.calcModifierLiving(var2, this.entityLiving);
+   }
 
-	EnchantmentModifierLiving(Empty3 var1) {
-		this();
-	}
+   // $FF: synthetic method
+   EnchantmentModifierLiving(Empty3 var1) {
+      this();
+   }
 }

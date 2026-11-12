@@ -1,5 +1,5 @@
 package net.minecraft.src;
 
 public interface IThreadedFileIO {
-	boolean writeNextIO();
+   boolean func_40550_A_();
 }

@@ -349,6 +349,21 @@ public class GL11 extends RealOpenGLEnums {
 		return EaglercraftGPU.glGenLists(count);
 	}
 
+	public static void glDeleteLists(int list, int count) {
+		for (int i = 0; i < count; i++) {
+			EaglercraftGPU.glDeleteLists(list + i);
+		}
+	}
+
+	public static void glGetInteger(int param, IntBuffer values) {
+		int pos = values.position();
+		int[] tmp = new int[values.remaining()];
+		EaglercraftGPU.glGetInteger(param, tmp);
+		for (int i = 0; i < tmp.length; i++) {
+			values.put(pos + i, tmp[i]);
+		}
+	}
+
 	public static void glDeleteLists(int list) {
 		EaglercraftGPU.glDeleteLists(list);
 	}

@@ -1,7 +1,10 @@
 package net.minecraft.src;
 
-public interface ICrafting {
-	void updateCraftingInventorySlot(Container var1, int var2, ItemStack var3);
+import net.minecraft.src.Container;
+import net.minecraft.src.ItemStack;
 
-	void updateCraftingInventoryInfo(Container var1, int var2, int var3);
+public interface ICrafting {
+   void updateCraftingInventorySlot(Container var1, int var2, ItemStack var3);
+
+   void updateCraftingInventoryInfo(Container var1, int var2, int var3);
 }

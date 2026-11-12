@@ -1,33 +1,38 @@
 package net.minecraft.src;
 
-import net.lax1dude.eaglercraft.Random;
+import java.util.Random;
+import net.minecraft.src.BiomeGenBase;
+import net.minecraft.src.ColorizerFoliage;
+import net.minecraft.src.ColorizerGrass;
+import net.minecraft.src.IBlockAccess;
+import net.minecraft.src.WorldGenerator;
 
 public class BiomeGenSwamp extends BiomeGenBase {
-	protected BiomeGenSwamp(int var1) {
-		super(var1);
-		this.biomeDecorator.treesPerChunk = 2;
-		this.biomeDecorator.flowersPerChunk = -999;
-		this.biomeDecorator.deadBushPerChunk = 1;
-		this.biomeDecorator.mushroomsPerChunk = 8;
-		this.biomeDecorator.reedsPerChunk = 10;
-		this.biomeDecorator.clayPerChunk = 1;
-		this.biomeDecorator.waterlilyPerChunk = 4;
-		this.waterColorMultiplier = 14745518;
-	}
+   protected BiomeGenSwamp(int var1) {
+      super(var1);
+      this.biomeDecorator.treesPerChunk = 2;
+      this.biomeDecorator.flowersPerChunk = -999;
+      this.biomeDecorator.deadBushPerChunk = 1;
+      this.biomeDecorator.mushroomsPerChunk = 8;
+      this.biomeDecorator.reedsPerChunk = 10;
+      this.biomeDecorator.clayPerChunk = 1;
+      this.biomeDecorator.waterlilyPerChunk = 4;
+      this.field_40256_A = 14745456;
+   }
 
-	public WorldGenerator getRandomWorldGenForTrees(Random var1) {
-		return this.worldGenSwamp;
-	}
+   public WorldGenerator getRandomWorldGenForTrees(Random var1) {
+      return this.worldGenSwamp;
+   }
 
-	public int getBiomeGrassColor() {
-		double var1 = (double) this.getFloatTemperature();
-		double var3 = (double) this.getFloatRainfall();
-		return ((ColorizerGrass.getGrassColor(var1, var3) & 16711422) + 5115470) / 2;
-	}
+   public int func_40254_a(IBlockAccess var1, int var2, int var3, int var4) {
+      double var5 = (double)var1.getWorldChunkManager().func_35554_b(var2, var3, var4);
+      double var7 = (double)var1.getWorldChunkManager().func_35558_c(var2, var4);
+      return ((ColorizerGrass.getGrassColor(var5, var7) & 16711422) + 5115470) / 2;
+   }
 
-	public int getBiomeFoliageColor() {
-		double var1 = (double) this.getFloatTemperature();
-		double var3 = (double) this.getFloatRainfall();
-		return ((ColorizerFoliage.getFoliageColor(var1, var3) & 16711422) + 5115470) / 2;
-	}
+   public int func_40255_b(IBlockAccess var1, int var2, int var3, int var4) {
+      double var5 = (double)var1.getWorldChunkManager().func_35554_b(var2, var3, var4);
+      double var7 = (double)var1.getWorldChunkManager().func_35558_c(var2, var4);
+      return ((ColorizerFoliage.getFoliageColor(var5, var7) & 16711422) + 5115470) / 2;
+   }
 }

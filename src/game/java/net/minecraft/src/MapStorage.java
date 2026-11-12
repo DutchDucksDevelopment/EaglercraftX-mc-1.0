@@ -113,16 +113,16 @@ public class MapStorage {
 			VFile2 var1 = this.saveHandler.getMapFileFromName("idcounts");
 			if(var1 != null && var1.exists()) {
 				DataInputStream var2 = new DataInputStream(var1.getInputStream());
-				NBTTagCompound var3 = CompressedStreamTools.read((DataInput)var2);
+				NBTTagCompound var3 = CompressedStreamTools.func_1141_a((DataInput)var2);
 				var2.close();
-				Iterator var4 = var3.getTags().iterator();
+				Iterator var4 = var3.func_28110_c().iterator();
 
 				while(var4.hasNext()) {
 					NBTBase var5 = (NBTBase)var4.next();
 					if(var5 instanceof NBTTagShort) {
 						NBTTagShort var6 = (NBTTagShort)var5;
-						String var7 = var6.getName();
-						short var8 = var6.data;
+						String var7 = var6.getKey();
+						short var8 = var6.shortValue;
 						this.idCounts.put(var7, Short.valueOf(var8));
 					}
 				}
@@ -158,7 +158,7 @@ public class MapStorage {
 					}
 
 					DataOutputStream var9 = new DataOutputStream(var3.getOutputStream());
-					CompressedStreamTools.write(var4, (DataOutput)var9);
+					CompressedStreamTools.writeTo(var4, (DataOutput)var9);
 					var9.close();
 				}
 			} catch (Exception var8) {

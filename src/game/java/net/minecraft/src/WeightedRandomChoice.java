@@ -1,9 +1,9 @@
 package net.minecraft.src;
 
 public class WeightedRandomChoice {
-	protected int itemWeight;
+   protected int field_35590_d;
 
-	public WeightedRandomChoice(int var1) {
-		this.itemWeight = var1;
-	}
+   public WeightedRandomChoice(int var1) {
+      this.field_35590_d = var1;
+   }
 }

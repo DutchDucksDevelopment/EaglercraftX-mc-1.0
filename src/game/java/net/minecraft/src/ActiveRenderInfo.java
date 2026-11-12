@@ -1,66 +1,80 @@
 package net.minecraft.src;
 
-import org.lwjgl.opengl.GL11;
-
 import net.lax1dude.eaglercraft.opengl.EaglercraftGPU;
 import net.lax1dude.eaglercraft.opengl.GlStateManager;
+import net.minecraft.src.Block;
+import net.minecraft.src.BlockFluid;
+import net.minecraft.src.ChunkPosition;
+import net.minecraft.src.EntityLiving;
+import net.minecraft.src.EntityPlayer;
+import net.minecraft.src.GLAllocation;
+import net.minecraft.src.MathHelper;
+import net.minecraft.src.Vec3D;
+import net.minecraft.src.World;
+import org.lwjgl.opengl.GL11;
 
 public class ActiveRenderInfo {
-	public static float objectX = 0.0F;
-	public static float objectY = 0.0F;
-	public static float objectZ = 0.0F;
-	private static int[] viewport = new int[16];
-	private static float[] modelview = new float[16];
-	private static float[] projection = new float[16];
-	private static float[] objectCoords = new float[3];
-	public static float rotationX;
-	public static float rotationXZ;
-	public static float rotationZ;
-	public static float rotationYZ;
-	public static float rotationXY;
+   public static float field_41074_a = 0.0F;
+   public static float field_41072_b = 0.0F;
+   public static float field_41073_c = 0.0F;
+   public static float objectX = 0.0F;
+   public static float objectY = 0.0F;
+   public static float objectZ = 0.0F;
+   private static int[] field_41079_i = new int[16];
+   private static float[] field_41076_j = new float[16];
+   private static float[] field_41077_k = new float[16];
+   private static float[] field_41075_l = new float[3];
+   public static float field_41070_d;
+   public static float field_41071_e;
+   public static float field_41068_f;
+   public static float field_41069_g;
+   public static float field_41078_h;
 
-	public static void updateRenderInfo(EntityPlayer var0, boolean var1) {
-		GlStateManager.getFloat(GL11.GL_MODELVIEW_MATRIX, modelview);
-		GlStateManager.getFloat(GL11.GL_PROJECTION_MATRIX, projection);
-		EaglercraftGPU.glGetInteger(GL11.GL_VIEWPORT, viewport);
-		float var2 = (float)((viewport[0] + viewport[2]) / 2);
-		float var3 = (float)((viewport[1] + viewport[3]) / 2);
-		EaglercraftGPU.gluUnProject(var2, var3, 0.0F, modelview, projection, viewport, objectCoords);
-		objectX = objectCoords[0];
-		objectY = objectCoords[1];
-		objectZ = objectCoords[2];
-		int var4 = var1 ? 1 : 0;
-		float var5 = var0.rotationPitch;
-		float var6 = var0.rotationYaw;
-		rotationX = MathHelper.cos(var6 * (float)Math.PI / 180.0F) * (float)(1 - var4 * 2);
-		rotationZ = MathHelper.sin(var6 * (float)Math.PI / 180.0F) * (float)(1 - var4 * 2);
-		rotationYZ = -rotationZ * MathHelper.sin(var5 * (float)Math.PI / 180.0F) * (float)(1 - var4 * 2);
-		rotationXY = rotationX * MathHelper.sin(var5 * (float)Math.PI / 180.0F) * (float)(1 - var4 * 2);
-		rotationXZ = MathHelper.cos(var5 * (float)Math.PI / 180.0F);
-	}
+   public static void func_41067_a(EntityPlayer var0, boolean var1) {
+      GlStateManager.getFloat(2982 /*GL_MODELVIEW_MATRIX*/, field_41076_j);
+      GlStateManager.getFloat(2983 /*GL_PROJECTION_MATRIX*/, field_41077_k);
+      EaglercraftGPU.glGetInteger(2978 /*GL_VIEWPORT*/, field_41079_i);
+      float var2 = (float)((field_41079_i[0] + field_41079_i[2]) / 2);
+      float var3 = (float)((field_41079_i[1] + field_41079_i[3]) / 2);
+      EaglercraftGPU.gluUnProject(var2, var3, 0.0F, field_41076_j, field_41077_k, field_41079_i, field_41075_l);
+      field_41074_a = field_41075_l[0];
+      field_41072_b = field_41075_l[1];
+      field_41073_c = field_41075_l[2];
+      objectX = field_41074_a;
+      objectY = field_41072_b;
+      objectZ = field_41073_c;
+      int var4 = var1?1:0;
+      float var5 = var0.rotationPitch;
+      float var6 = var0.rotationYaw;
+      field_41070_d = MathHelper.cos(var6 * 3.1415927F / 180.0F) * (float)(1 - var4 * 2);
+      field_41068_f = MathHelper.sin(var6 * 3.1415927F / 180.0F) * (float)(1 - var4 * 2);
+      field_41069_g = -field_41068_f * MathHelper.sin(var5 * 3.1415927F / 180.0F) * (float)(1 - var4 * 2);
+      field_41078_h = field_41070_d * MathHelper.sin(var5 * 3.1415927F / 180.0F) * (float)(1 - var4 * 2);
+      field_41071_e = MathHelper.cos(var5 * 3.1415927F / 180.0F);
+   }
 
-	public static Vec3D projectViewFromEntity(EntityLiving var0, double var1) {
-		double var3 = var0.prevPosX + (var0.posX - var0.prevPosX) * var1;
-		double var5 = var0.prevPosY + (var0.posY - var0.prevPosY) * var1 + (double)var0.getEyeHeight();
-		double var7 = var0.prevPosZ + (var0.posZ - var0.prevPosZ) * var1;
-		double var9 = var3 + (double)(objectX * 1.0F);
-		double var11 = var5 + (double)(objectY * 1.0F);
-		double var13 = var7 + (double)(objectZ * 1.0F);
-		return Vec3D.createVector(var9, var11, var13);
-	}
+   public static Vec3D func_41065_a(EntityLiving var0, double var1) {
+      double var3 = var0.prevPosX + (var0.posX - var0.prevPosX) * var1;
+      double var5 = var0.prevPosY + (var0.posY - var0.prevPosY) * var1 + (double)var0.getEyeHeight();
+      double var7 = var0.prevPosZ + (var0.posZ - var0.prevPosZ) * var1;
+      double var9 = var3 + (double)(field_41074_a * 1.0F);
+      double var11 = var5 + (double)(field_41072_b * 1.0F);
+      double var13 = var7 + (double)(field_41073_c * 1.0F);
+      return Vec3D.createVector(var9, var11, var13);
+   }
 
-	public static int getBlockIdAtEntityViewpoint(World var0, EntityLiving var1, float var2) {
-		Vec3D var3 = projectViewFromEntity(var1, (double)var2);
-		ChunkPosition var4 = new ChunkPosition(var3);
-		int var5 = var0.getBlockId(var4.x, var4.y, var4.z);
-		if(var5 != 0 && Block.blocksList[var5].blockMaterial.isLiquid()) {
-			float var6 = BlockFluid.getFluidHeightPercent(var0.getBlockMetadata(var4.x, var4.y, var4.z)) - 1.0F / 9.0F;
-			float var7 = (float)(var4.y + 1) - var6;
-			if(var3.yCoord >= (double)var7) {
-				var5 = var0.getBlockId(var4.x, var4.y + 1, var4.z);
-			}
-		}
+   public static int func_41066_a(World var0, EntityLiving var1, float var2) {
+      Vec3D var3 = func_41065_a(var1, (double)var2);
+      ChunkPosition var4 = new ChunkPosition(var3);
+      int var5 = var0.getBlockId(var4.x, var4.y, var4.z);
+      if(var5 != 0 && Block.blocksList[var5].blockMaterial.getIsLiquid()) {
+         float var6 = BlockFluid.getFluidHeightPercent(var0.getBlockMetadata(var4.x, var4.y, var4.z)) - 0.11111111F;
+         float var7 = (float)(var4.y + 1) - var6;
+         if(var3.yCoord >= (double)var7) {
+            var5 = var0.getBlockId(var4.x, var4.y + 1, var4.z);
+         }
+      }
 
-		return var5;
-	}
+      return var5;
+   }
 }

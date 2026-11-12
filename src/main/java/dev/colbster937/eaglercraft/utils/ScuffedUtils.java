@@ -58,7 +58,7 @@ public class ScuffedUtils {
   }
 
   public static boolean isStringEmpty(String str) {
-    return str == null || str.isEmpty() || str.isBlank() || str.length() < 1;
+    return str == null || str.isEmpty() || str.trim().isEmpty() || str.length() < 1;
   }
 
   public static void showCrashReport(Throwable t) {

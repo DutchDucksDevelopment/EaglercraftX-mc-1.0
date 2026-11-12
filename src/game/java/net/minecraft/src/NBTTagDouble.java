@@ -3,50 +3,46 @@ package net.minecraft.src;
 import java.io.DataInput;
 import java.io.DataOutput;
 import java.io.IOException;
+import net.minecraft.src.NBTBase;
 
 public class NBTTagDouble extends NBTBase {
-	public double data;
+   public double doubleValue;
 
-	public NBTTagDouble(String var1) {
-		super(var1);
-	}
+   public NBTTagDouble(String var1) {
+      super(var1);
+   }
 
-	public NBTTagDouble(String var1, double var2) {
-		super(var1);
-		this.data = var2;
-	}
+   public NBTTagDouble(String var1, double var2) {
+      super(var1);
+      this.doubleValue = var2;
+   }
 
-	void write(DataOutput var1) throws IOException {
-		var1.writeDouble(this.data);
-	}
+   void writeTagContents(DataOutput var1) throws IOException {
+      var1.writeDouble(this.doubleValue);
+   }
 
-	void load(DataInput var1) throws IOException {
-		this.data = var1.readDouble();
-	}
+   void readTagContents(DataInput var1) throws IOException {
+      this.doubleValue = var1.readDouble();
+   }
 
-	public byte getId() {
-		return (byte)6;
-	}
+   public byte getType() {
+      return (byte)6;
+   }
 
-	public String toString() {
-		return "" + this.data;
-	}
+   public String toString() {
+      return "" + this.doubleValue;
+   }
 
-	public NBTBase copy() {
-		return new NBTTagDouble(this.getName(), this.data);
-	}
+   public NBTBase func_40195_b() {
+      return new NBTTagDouble(this.getKey(), this.doubleValue);
+   }
 
-	public boolean equals(Object var1) {
-		if(super.equals(var1)) {
-			NBTTagDouble var2 = (NBTTagDouble)var1;
-			return this.data == var2.data;
-		} else {
-			return false;
-		}
-	}
-
-	public int hashCode() {
-		long var1 = Double.doubleToLongBits(this.data);
-		return super.hashCode() ^ (int)(var1 ^ var1 >>> 32);
-	}
+   public boolean equals(Object var1) {
+      if(super.equals(var1)) {
+         NBTTagDouble var2 = (NBTTagDouble)var1;
+         return this.doubleValue == var2.doubleValue;
+      } else {
+         return false;
+      }
+   }
 }

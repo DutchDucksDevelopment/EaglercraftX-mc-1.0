@@ -5,34 +5,29 @@ import java.io.InputStreamReader;
 import java.util.HashMap;
 import java.util.Map;
 
-import net.lax1dude.eaglercraft.EagRuntime;
-
 public class AchievementMap {
-	public static AchievementMap instance = new AchievementMap();
-	private Map guidMap = new HashMap();
+   public static AchievementMap instance = new AchievementMap();
+   private Map guidMap = new HashMap();
 
-	private AchievementMap() {
-		try {
-			BufferedReader var1 = new BufferedReader(new InputStreamReader(EagRuntime.getResourceStream("/achievement/map.txt")));
+   private AchievementMap() {
+      try {
+         BufferedReader var1 = new BufferedReader(new InputStreamReader(AchievementMap.class.getResourceAsStream("/achievement/map.txt")));
 
-			while(true) {
-				String var2 = var1.readLine();
-				if(var2 == null) {
-					var1.close();
-					break;
-				}
+         String var2;
+         while((var2 = var1.readLine()) != null) {
+            String[] var3 = var2.split(",");
+            int var4 = Integer.parseInt(var3[0]);
+            this.guidMap.put(Integer.valueOf(var4), var3[1]);
+         }
 
-				String[] var3 = var2.split(",");
-				int var4 = Integer.parseInt(var3[0]);
-				this.guidMap.put(Integer.valueOf(var4), var3[1]);
-			}
-		} catch (Exception var5) {
-			var5.printStackTrace();
-		}
+         var1.close();
+      } catch (Exception var5) {
+         var5.printStackTrace();
+      }
 
-	}
+   }
 
-	public static String getGuid(int var0) {
-		return (String)instance.guidMap.get(Integer.valueOf(var0));
-	}
+   public static String getGuid(int var0) {
+      return (String)instance.guidMap.get(Integer.valueOf(var0));
+   }
 }

@@ -1,83 +1,80 @@
 package net.minecraft.src;
 
-import net.lax1dude.eaglercraft.Random;
+import java.util.Random;
+import net.minecraft.src.Block;
+import net.minecraft.src.World;
+import net.minecraft.src.WorldGenerator;
 
 public class WorldGenForest extends WorldGenerator {
-	public WorldGenForest(boolean var1) {
-		super(var1);
-	}
+   public WorldGenForest(boolean var1) {
+      super(var1);
+   }
 
-	public boolean generate(World var1, Random var2, int var3, int var4, int var5) {
-		int var6 = var2.nextInt(3) + 5;
-		boolean var7 = true;
-		if (var4 >= 1 && var4 + var6 + 1 <= 256) {
-			int var8;
-			int var10;
-			int var11;
-			int var12;
-			for (var8 = var4; var8 <= var4 + 1 + var6; ++var8) {
-				byte var9 = 1;
-				if (var8 == var4) {
-					var9 = 0;
-				}
+   public boolean generate(World var1, Random var2, int var3, int var4, int var5) {
+      int var6 = var2.nextInt(3) + 5;
+      boolean var7 = true;
+      if(var4 >= 1 && var4 + var6 + 1 <= var1.field_35472_c) {
+         for(int var8 = var4; var8 <= var4 + 1 + var6; ++var8) {
+            byte var9 = 1;
+            if(var8 == var4) {
+               var9 = 0;
+            }
 
-				if (var8 >= var4 + 1 + var6 - 2) {
-					var9 = 2;
-				}
+            if(var8 >= var4 + 1 + var6 - 2) {
+               var9 = 2;
+            }
 
-				for (var10 = var3 - var9; var10 <= var3 + var9 && var7; ++var10) {
-					for (var11 = var5 - var9; var11 <= var5 + var9 && var7; ++var11) {
-						if (var8 >= 0 && var8 < 256) {
-							var12 = var1.getBlockId(var10, var8, var11);
-							if (var12 != 0 && var12 != Block.leaves.blockID) {
-								var7 = false;
-							}
-						} else {
-							var7 = false;
-						}
-					}
-				}
-			}
+            for(int var10 = var3 - var9; var10 <= var3 + var9 && var7; ++var10) {
+               for(int var11 = var5 - var9; var11 <= var5 + var9 && var7; ++var11) {
+                  if(var8 >= 0 && var8 < var1.field_35472_c) {
+                     int var12 = var1.getBlockId(var10, var8, var11);
+                     if(var12 != 0 && var12 != Block.leaves.blockID) {
+                        var7 = false;
+                     }
+                  } else {
+                     var7 = false;
+                  }
+               }
+            }
+         }
 
-			if (!var7) {
-				return false;
-			} else {
-				var8 = var1.getBlockId(var3, var4 - 1, var5);
-				if ((var8 == Block.grass.blockID || var8 == Block.dirt.blockID) && var4 < 256 - var6 - 1) {
-					this.func_50073_a(var1, var3, var4 - 1, var5, Block.dirt.blockID);
+         if(!var7) {
+            return false;
+         } else {
+            int var16 = var1.getBlockId(var3, var4 - 1, var5);
+            if((var16 == Block.grass.blockID || var16 == Block.dirt.blockID) && var4 < var1.field_35472_c - var6 - 1) {
+               var1.setBlock(var3, var4 - 1, var5, Block.dirt.blockID);
 
-					int var16;
-					for (var16 = var4 - 3 + var6; var16 <= var4 + var6; ++var16) {
-						var10 = var16 - (var4 + var6);
-						var11 = 1 - var10 / 2;
+               for(int var17 = var4 - 3 + var6; var17 <= var4 + var6; ++var17) {
+                  int var19 = var17 - (var4 + var6);
+                  int var21 = 1 - var19 / 2;
 
-						for (var12 = var3 - var11; var12 <= var3 + var11; ++var12) {
-							int var13 = var12 - var3;
+                  for(int var22 = var3 - var21; var22 <= var3 + var21; ++var22) {
+                     int var13 = var22 - var3;
 
-							for (int var14 = var5 - var11; var14 <= var5 + var11; ++var14) {
-								int var15 = var14 - var5;
-								if ((Math.abs(var13) != var11 || Math.abs(var15) != var11 || var2.nextInt(2) != 0 && var10 != 0)
-										&& !Block.opaqueCubeLookup[var1.getBlockId(var12, var16, var14)]) {
-									this.setBlockAndMetadata(var1, var12, var16, var14, Block.leaves.blockID, 2);
-								}
-							}
-						}
-					}
+                     for(int var14 = var5 - var21; var14 <= var5 + var21; ++var14) {
+                        int var15 = var14 - var5;
+                        if((Math.abs(var13) != var21 || Math.abs(var15) != var21 || var2.nextInt(2) != 0 && var19 != 0) && !Block.opaqueCubeLookup[var1.getBlockId(var22, var17, var14)]) {
+                           this.func_41060_a(var1, var22, var17, var14, Block.leaves.blockID, 2);
+                        }
+                     }
+                  }
+               }
 
-					for (var16 = 0; var16 < var6; ++var16) {
-						var10 = var1.getBlockId(var3, var4 + var16, var5);
-						if (var10 == 0 || var10 == Block.leaves.blockID) {
-							this.setBlockAndMetadata(var1, var3, var4 + var16, var5, Block.wood.blockID, 2);
-						}
-					}
+               for(int var18 = 0; var18 < var6; ++var18) {
+                  int var20 = var1.getBlockId(var3, var4 + var18, var5);
+                  if(var20 == 0 || var20 == Block.leaves.blockID) {
+                     this.func_41060_a(var1, var3, var4 + var18, var5, Block.wood.blockID, 2);
+                  }
+               }
 
-					return true;
-				} else {
-					return false;
-				}
-			}
-		} else {
-			return false;
-		}
-	}
+               return true;
+            } else {
+               return false;
+            }
+         }
+      } else {
+         return false;
+      }
+   }
 }

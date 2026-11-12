@@ -1,18 +1,18 @@
 package net.minecraft.src;
 
-import net.lax1dude.eaglercraft.Random;
+import java.util.Random;
 
 public abstract class StructurePieceBlockSelector {
-	protected int selectedBlockId;
-	protected int selectedBlockMetaData;
+   protected int selectedBlockId;
+   protected int selectedBlockMetaData;
 
-	public abstract void selectBlocks(Random var1, int var2, int var3, int var4, boolean var5);
+   public abstract void selectBlocks(Random var1, int var2, int var3, int var4, boolean var5);
 
-	public int getSelectedBlockId() {
-		return this.selectedBlockId;
-	}
+   public int getSelectedBlockId() {
+      return this.selectedBlockId;
+   }
 
-	public int getSelectedBlockMetaData() {
-		return this.selectedBlockMetaData;
-	}
+   public int getSelectedBlockMetaData() {
+      return this.selectedBlockMetaData;
+   }
 }

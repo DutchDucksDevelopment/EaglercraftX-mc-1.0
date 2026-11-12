@@ -1,67 +1,73 @@
 package net.minecraft.src;
 
-import net.lax1dude.eaglercraft.Random;
+import java.util.Random;
+import net.minecraft.src.BiomeGenBase;
+import net.minecraft.src.BiomeGenHell;
+import net.minecraft.src.Block;
+import net.minecraft.src.BlockFlower;
+import net.minecraft.src.Item;
+import net.minecraft.src.ItemStack;
+import net.minecraft.src.World;
+import net.minecraft.src.WorldChunkManager;
 
 public class BlockNetherStalk extends BlockFlower {
-	protected BlockNetherStalk(int var1) {
-		super(var1, 226);
-		this.setTickRandomly(true);
-		float var2 = 0.5F;
-		this.setBlockBounds(0.5F - var2, 0.0F, 0.5F - var2, 0.5F + var2, 0.25F, 0.5F + var2);
-	}
+   protected BlockNetherStalk(int var1) {
+      super(var1, 226);
+      this.setTickOnLoad(true);
+      float var2 = 0.5F;
+      this.setBlockBounds(0.5F - var2, 0.0F, 0.5F - var2, 0.5F + var2, 0.25F, 0.5F + var2);
+   }
 
-	protected boolean canThisPlantGrowOnThisBlockID(int var1) {
-		return var1 == Block.slowSand.blockID;
-	}
+   protected boolean canThisPlantGrowOnThisBlockID(int var1) {
+      return var1 == Block.slowSand.blockID;
+   }
 
-	public boolean canBlockStay(World var1, int var2, int var3, int var4) {
-		return this.canThisPlantGrowOnThisBlockID(var1.getBlockId(var2, var3 - 1, var4));
-	}
+   public void updateTick(World var1, int var2, int var3, int var4, Random var5) {
+      int var6 = var1.getBlockMetadata(var2, var3, var4);
+      if(var6 < 3) {
+         WorldChunkManager var7 = var1.getWorldChunkManager();
+         if(var7 != null) {
+            BiomeGenBase var8 = var7.getBiomeGenAt(var2, var4);
+            if(var8 instanceof BiomeGenHell && var5.nextInt(15) == 0) {
+               ++var6;
+               var1.setBlockMetadataWithNotify(var2, var3, var4, var6);
+            }
+         }
+      }
 
-	public void updateTick(World var1, int var2, int var3, int var4, Random var5) {
-		int var6 = var1.getBlockMetadata(var2, var3, var4);
-		if (var6 < 3) {
-			BiomeGenBase var7 = var1.getBiomeGenForCoords(var2, var4);
-			if (var7 instanceof BiomeGenHell && var5.nextInt(10) == 0) {
-				++var6;
-				var1.setBlockMetadataWithNotify(var2, var3, var4, var6);
-			}
-		}
+      super.updateTick(var1, var2, var3, var4, var5);
+   }
 
-		super.updateTick(var1, var2, var3, var4, var5);
-	}
+   public int getBlockTextureFromSideAndMetadata(int var1, int var2) {
+      return var2 >= 3?this.blockIndexInTexture + 2:(var2 > 0?this.blockIndexInTexture + 1:this.blockIndexInTexture);
+   }
 
-	public int getBlockTextureFromSideAndMetadata(int var1, int var2) {
-		return var2 >= 3 ? this.blockIndexInTexture + 2
-				: (var2 > 0 ? this.blockIndexInTexture + 1 : this.blockIndexInTexture);
-	}
+   public int getRenderType() {
+      return 6;
+   }
 
-	public int getRenderType() {
-		return 6;
-	}
+   public void dropBlockAsItemWithChance(World var1, int var2, int var3, int var4, int var5, float var6, int var7) {
+      if(!var1.multiplayerWorld) {
+         int var8 = 1;
+         if(var5 >= 3) {
+            var8 = 2 + var1.rand.nextInt(3);
+            if(var7 > 0) {
+               var8 += var1.rand.nextInt(var7 + 1);
+            }
+         }
 
-	public void dropBlockAsItemWithChance(World var1, int var2, int var3, int var4, int var5, float var6, int var7) {
-		if (!var1.isRemote) {
-			int var8 = 1;
-			if (var5 >= 3) {
-				var8 = 2 + var1.rand.nextInt(3);
-				if (var7 > 0) {
-					var8 += var1.rand.nextInt(var7 + 1);
-				}
-			}
+         for(int var9 = 0; var9 < var8; ++var9) {
+            this.dropBlockAsItem_do(var1, var2, var3, var4, new ItemStack(Item.netherStalkSeeds));
+         }
 
-			for (int var9 = 0; var9 < var8; ++var9) {
-				this.dropBlockAsItem_do(var1, var2, var3, var4, new ItemStack(Item.netherStalkSeeds));
-			}
+      }
+   }
 
-		}
-	}
+   public int idDropped(int var1, Random var2, int var3) {
+      return 0;
+   }
 
-	public int idDropped(int var1, Random var2, int var3) {
-		return 0;
-	}
-
-	public int quantityDropped(Random var1) {
-		return 0;
-	}
+   public int quantityDropped(Random var1) {
+      return 0;
+   }
 }

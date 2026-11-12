@@ -31,4 +31,9 @@ public class RenderHelper {
 		enableStandardItemLighting();
 		GL11.glPopMatrix();
 	}
+
+
+	public static void func_41089_c() {
+		enableGUIStandardItemLighting();
+	}
 }

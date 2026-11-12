@@ -22,9 +22,9 @@ public class SummonCommand extends Command {
         Entity e;
         try {
           int id = Integer.parseInt(args[1]);
-          e = EntityList.createEntityByID(id, this.mc.theWorld);
+          e = EntityList.createEntity(id, this.mc.theWorld);
         } catch (NumberFormatException ex) {
-          e = EntityList.createEntityByName(args[1], this.mc.theWorld);
+          e = EntityList.createEntityInWorld(args[1], this.mc.theWorld);
         }
         if (e != null && !isBlacklisted(args[1], e)) {
           double x = this.mc.thePlayer.posX;
@@ -60,7 +60,7 @@ public class SummonCommand extends Command {
     try {
       aid = Integer.parseInt(arg);
     } catch (NumberFormatException t) {
-      aid = EntityList.getEntityID(arg);
+      aid = EntityList.getEntityIDFromName(arg);
     }
     return blacklist.contains(eid) || blacklist.contains(aid);
   }

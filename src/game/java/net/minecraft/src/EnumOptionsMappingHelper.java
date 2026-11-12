@@ -1,53 +1,47 @@
 package net.minecraft.src;
 
+import net.minecraft.src.EnumOptions;
+
 class EnumOptionsMappingHelper {
-	static final int[] enumOptionsMappingHelperArray = new int[EnumOptions.values().length];
+   // $FF: synthetic field
+   static final int[] enumOptionsMappingHelperArray = new int[EnumOptions.values().length];
 
-	static {
-		try {
-			enumOptionsMappingHelperArray[EnumOptions.INVERT_MOUSE.ordinal()] = 1;
-		} catch (NoSuchFieldError var6) {
-		}
+   static {
+      try {
+         enumOptionsMappingHelperArray[EnumOptions.INVERT_MOUSE.ordinal()] = 1;
+      } catch (NoSuchFieldError var6) {
+         ;
+      }
 
-		try {
-			enumOptionsMappingHelperArray[EnumOptions.VIEW_BOBBING.ordinal()] = 2;
-		} catch (NoSuchFieldError var5) {
-		}
+      try {
+         enumOptionsMappingHelperArray[EnumOptions.VIEW_BOBBING.ordinal()] = 2;
+      } catch (NoSuchFieldError var5) {
+         ;
+      }
 
-		try {
-			enumOptionsMappingHelperArray[EnumOptions.ANAGLYPH.ordinal()] = 3;
-		} catch (NoSuchFieldError var4) {
-		}
+      try {
+         enumOptionsMappingHelperArray[EnumOptions.ANAGLYPH.ordinal()] = 3;
+      } catch (NoSuchFieldError var4) {
+         ;
+      }
 
-		try {
-			enumOptionsMappingHelperArray[EnumOptions.AMBIENT_OCCLUSION.ordinal()] = 4;
-		} catch (NoSuchFieldError var2) {
-		}
+      try {
+         enumOptionsMappingHelperArray[EnumOptions.ADVANCED_OPENGL.ordinal()] = 4;
+      } catch (NoSuchFieldError var3) {
+         ;
+      }
 
-		try {
-			enumOptionsMappingHelperArray[EnumOptions.RENDER_CLOUDS.ordinal()] = 5;
-		} catch (NoSuchFieldError var1) {
-		}
+      try {
+         enumOptionsMappingHelperArray[EnumOptions.AMBIENT_OCCLUSION.ordinal()] = 5;
+      } catch (NoSuchFieldError var2) {
+         ;
+      }
 
-		try {
-			enumOptionsMappingHelperArray[EnumOptions.SHOW_FRAMERATE.ordinal()] = 6;
-		} catch (NoSuchFieldError var1) {
-		}
+      try {
+         enumOptionsMappingHelperArray[EnumOptions.RENDER_CLOUDS.ordinal()] = 6;
+      } catch (NoSuchFieldError var1) {
+         ;
+      }
 
-		try {
-			enumOptionsMappingHelperArray[EnumOptions.SHOW_COORDS.ordinal()] = 7;
-		} catch (NoSuchFieldError var1) {
-		}
-
-		try {
-			enumOptionsMappingHelperArray[EnumOptions.VSYNC.ordinal()] = 8;
-		} catch (NoSuchFieldError var1) {
-		}
-
-		try {
-			enumOptionsMappingHelperArray[EnumOptions.FANCY_GRASS.ordinal()] = 9;
-		} catch (NoSuchFieldError var1) {
-		}
-
-	}
+   }
 }
