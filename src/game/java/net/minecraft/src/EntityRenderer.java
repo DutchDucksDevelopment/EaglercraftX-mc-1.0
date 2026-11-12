@@ -658,16 +658,6 @@ public class EntityRenderer {
             }
 
             Profiler.endStartSection("sleep");
-            if(this.mc.gameSettings.limitFramerate == 2) {
-               long var8 = (this.renderEndNanoTime + (long)(1000000000 / var20) - System.nanoTime()) / 1000000L;
-               if(var8 > 0L && var8 < 500L) {
-                  try {
-                     Thread.sleep(var8);
-                  } catch (InterruptedException var12) {
-                     var12.printStackTrace();
-                  }
-               }
-            }
 
             this.renderEndNanoTime = System.nanoTime();
             Profiler.endStartSection("gui");
@@ -683,21 +673,6 @@ public class EntityRenderer {
             GL11.glMatrixMode(5888 /*GL_MODELVIEW0_ARB*/);
             GL11.glLoadIdentity();
             this.setupOverlayRendering();
-            if(this.mc.gameSettings.limitFramerate == 2) {
-               long var21 = (this.renderEndNanoTime + (long)(1000000000 / var20) - System.nanoTime()) / 1000000L;
-               if(var21 < 0L) {
-                  var21 += 10L;
-               }
-
-               if(var21 > 0L && var21 < 500L) {
-                  try {
-                     Thread.sleep(var21);
-                  } catch (InterruptedException var11) {
-                     var11.printStackTrace();
-                  }
-               }
-            }
-
             this.renderEndNanoTime = System.nanoTime();
          }
 

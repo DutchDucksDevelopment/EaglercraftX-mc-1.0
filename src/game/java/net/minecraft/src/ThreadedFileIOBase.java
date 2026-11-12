@@ -13,15 +13,10 @@ public class ThreadedFileIOBase implements Runnable {
    private volatile boolean field_40570_e = false;
 
    private ThreadedFileIOBase() {
-      Thread var1 = new Thread(this, "File IO Thread");
-      var1.setPriority(1);
-      var1.start();
    }
 
    public void run() {
-      while(true) {
-         this.func_40568_b();
-      }
+      this.func_40568_b();
    }
 
    private void func_40568_b() {
@@ -32,24 +27,6 @@ public class ThreadedFileIOBase implements Runnable {
             this.field_40571_b.remove(var1--);
             ++this.field_40569_d;
          }
-
-         try {
-            if(!this.field_40570_e) {
-               Thread.sleep(10L);
-            } else {
-               Thread.sleep(0L);
-            }
-         } catch (InterruptedException var6) {
-            var6.printStackTrace();
-         }
-      }
-
-      if(this.field_40571_b.isEmpty()) {
-         try {
-            Thread.sleep(25L);
-         } catch (InterruptedException var5) {
-            var5.printStackTrace();
-         }
       }
 
    }
@@ -58,16 +35,10 @@ public class ThreadedFileIOBase implements Runnable {
       if(!this.field_40571_b.contains(var1)) {
          ++this.field_40572_c;
          this.field_40571_b.add(var1);
+         this.func_40568_b();
       }
    }
 
    public void func_40566_a() throws InterruptedException {
-      this.field_40570_e = true;
-
-      while(this.field_40572_c != this.field_40569_d) {
-         Thread.sleep(10L);
-      }
-
-      this.field_40570_e = false;
    }
 }
