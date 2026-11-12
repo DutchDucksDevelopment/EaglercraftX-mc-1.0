@@ -302,3 +302,5 @@ if not ok then return end
 §1C§2o§3l§4o§5r§6m§7a§8t§9i§ac
 §kFUNKY LOL
 SOPA means LOSER in Swedish
+Laxative!
+minecraft = game(mc);
