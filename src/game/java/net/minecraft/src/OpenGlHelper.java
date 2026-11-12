@@ -9,4 +9,8 @@ public class OpenGlHelper extends net.lax1dude.eaglercraft.opengl.OpenGlHelper {
 
    public static void setClientActiveTexture(int var0) {
    }
+
+   public static void setActiveTexture(int var0) {
+      net.lax1dude.eaglercraft.opengl.GlStateManager.setActiveTexture(var0);
+   }
 }
