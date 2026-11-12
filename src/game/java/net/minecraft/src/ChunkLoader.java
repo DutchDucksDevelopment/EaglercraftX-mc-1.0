@@ -1,10 +1,8 @@
 package net.minecraft.src;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.List;
+import net.lax1dude.eaglercraft.internal.vfs2.VFile2;
 import net.minecraft.src.Chunk;
 import net.minecraft.src.CompressedStreamTools;
 import net.minecraft.src.Entity;
@@ -19,45 +17,27 @@ import net.minecraft.src.World;
 import net.minecraft.src.WorldInfo;
 
 public class ChunkLoader implements IChunkLoader {
-   private File saveDir;
+   private VFile2 saveDir;
    private boolean createIfNecessary;
 
-   public ChunkLoader(File var1, boolean var2) {
+   public ChunkLoader(VFile2 var1, boolean var2) {
       this.saveDir = var1;
       this.createIfNecessary = var2;
    }
 
-   private File chunkFileForXZ(int var1, int var2) {
+   private VFile2 chunkFileForXZ(int var1, int var2) {
       String var3 = "c." + Integer.toString(var1, 36) + "." + Integer.toString(var2, 36) + ".dat";
       String var4 = Integer.toString(var1 & 63, 36);
       String var5 = Integer.toString(var2 & 63, 36);
-      File var6 = new File(this.saveDir, var4);
-      if(!var6.exists()) {
-         if(!this.createIfNecessary) {
-            return null;
-         }
-
-         var6.mkdir();
-      }
-
-      var6 = new File(var6, var5);
-      if(!var6.exists()) {
-         if(!this.createIfNecessary) {
-            return null;
-         }
-
-         var6.mkdir();
-      }
-
-      var6 = new File(var6, var3);
+      VFile2 var6 = new VFile2(new VFile2(new VFile2(this.saveDir, var4), var5), var3);
       return !var6.exists() && !this.createIfNecessary?null:var6;
    }
 
    public Chunk loadChunk(World var1, int var2, int var3) throws IOException {
-      File var4 = this.chunkFileForXZ(var2, var3);
+      VFile2 var4 = this.chunkFileForXZ(var2, var3);
       if(var4 != null && var4.exists()) {
          try {
-            FileInputStream var5 = new FileInputStream(var4);
+            java.io.InputStream var5 = var4.getInputStream();
             NBTTagCompound var6 = CompressedStreamTools.loadGzippedCompoundFromOutputStream(var5);
             if(!var6.hasKey("Level")) {
                System.out.println("Chunk file at " + var2 + "," + var3 + " is missing level data, skipping");
@@ -89,15 +69,15 @@ public class ChunkLoader implements IChunkLoader {
 
    public void saveChunk(World var1, Chunk var2) throws IOException {
       var1.checkSessionLock();
-      File var3 = this.chunkFileForXZ(var2.xPosition, var2.zPosition);
+      VFile2 var3 = this.chunkFileForXZ(var2.xPosition, var2.zPosition);
       if(var3.exists()) {
          WorldInfo var4 = var1.getWorldInfo();
-         var4.setSizeOnDisk(var4.getSizeOnDisk() - var3.length());
+         var4.setSizeOnDisk(var4.getSizeOnDisk() - (long)var3.length());
       }
 
       try {
-         File var10 = new File(this.saveDir, "tmp_chunk.dat");
-         FileOutputStream var5 = new FileOutputStream(var10);
+         VFile2 var10 = new VFile2(this.saveDir, "tmp_chunk.dat");
+         java.io.OutputStream var5 = var10.getOutputStream();
          NBTTagCompound var6 = new NBTTagCompound();
          NBTTagCompound var7 = new NBTTagCompound();
          var6.setTag("Level", var7);
@@ -110,7 +90,7 @@ public class ChunkLoader implements IChunkLoader {
 
          var10.renameTo(var3);
          WorldInfo var8 = var1.getWorldInfo();
-         var8.setSizeOnDisk(var8.getSizeOnDisk() + var3.length());
+         var8.setSizeOnDisk(var8.getSizeOnDisk() + (long)var3.length());
       } catch (Exception var9) {
          var9.printStackTrace();
       }
