@@ -1,8 +1,7 @@
 package net.minecraft.src;
 
-import java.awt.image.BufferedImage;
-import java.io.IOException;
-import javax.imageio.ImageIO;
+import dev.colbster937.eaglercraft.rp.TexturePack;
+import net.lax1dude.eaglercraft.opengl.ImageData;
 import net.minecraft.client.Minecraft;
 import net.minecraft.src.ChunkCoordinates;
 import net.minecraft.src.Item;
@@ -20,11 +19,11 @@ public class TextureCompassFX extends TextureFX {
       this.tileImage = 1;
 
       try {
-         BufferedImage var2 = ImageIO.read(Minecraft.class.getResource("/gui/items.png"));
+         ImageData var2 = ImageData.loadImageFile(TexturePack.getResourceAsStream("/gui/items.png"));
          int var3 = this.iconIndex % 16 * 16;
          int var4 = this.iconIndex / 16 * 16;
          var2.getRGB(var3, var4, 16, 16, this.compassIconImageData, 0, 16);
-      } catch (IOException var5) {
+      } catch (Exception var5) {
          var5.printStackTrace();
       }
 

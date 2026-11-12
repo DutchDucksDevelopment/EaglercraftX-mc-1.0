@@ -1,6 +1,7 @@
 package net.minecraft.src;
 
-import java.awt.Color;
+import net.lax1dude.eaglercraft.EagRuntime;
+import net.peyton.java.awt.Color;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
@@ -283,9 +284,9 @@ public class GuiIngame extends Gui {
          var8.drawStringWithShadow(this.mc.func_6262_n(), 2, 22, 16777215);
          var8.drawStringWithShadow(this.mc.debugInfoEntities(), 2, 32, 16777215);
          var8.drawStringWithShadow(this.mc.func_21002_o(), 2, 42, 16777215);
-         long var34 = Runtime.getRuntime().maxMemory();
-         long var43 = Runtime.getRuntime().totalMemory();
-         long var54 = Runtime.getRuntime().freeMemory();
+         long var34 = EagRuntime.maxMemory();
+         long var43 = EagRuntime.totalMemory();
+         long var54 = EagRuntime.freeMemory();
          long var58 = var43 - var54;
          String var64 = "Used memory: " + var58 * 100L / var34 + "% (" + var58 / 1024L / 1024L + "MB) of " + var34 / 1024L / 1024L + "MB";
          this.drawString(var8, var64, var6 - var8.getStringWidth(var64) - 2, 2, 14737632);

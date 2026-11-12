@@ -134,10 +134,9 @@ public class NetClientHandler extends NetHandler {
    public int field_35785_d = 20;
    Random rand = new Random();
 
-   public NetClientHandler(Minecraft var1, String var2, int var3) throws UnknownHostException, IOException {
+   public NetClientHandler(Minecraft var1, String var2, int var3) {
       this.mc = var1;
-      Socket var4 = new Socket(InetAddress.getByName(var2), var3);
-      this.netManager = new NetworkManager(var4, "Client", this);
+      this.netManager = new NetworkManager(var2, this);
    }
 
    public void processReadPackets() {
