@@ -73,11 +73,7 @@ public class BlockSign extends BlockContainer {
    }
 
    public TileEntity getBlockEntity() {
-      try {
-         return (TileEntity)this.signEntityClass.newInstance();
-      } catch (Exception var2) {
-         throw new RuntimeException(var2);
-      }
+      return new TileEntitySign();
    }
 
    public int idDropped(int var1, Random var2, int var3) {

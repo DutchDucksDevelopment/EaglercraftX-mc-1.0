@@ -11,7 +11,7 @@ import net.minecraft.src.WorldGenerator;
 public class BiomeGenTaiga extends BiomeGenBase {
    public BiomeGenTaiga(int var1) {
       super(var1);
-      this.spawnableCreatureList.add(new SpawnListEntry(EntityWolf.class, 8, 4, 4));
+      this.spawnableCreatureList.add(new SpawnListEntry(EntityWolf::new, 8, 4, 4));
       this.biomeDecorator.treesPerChunk = 10;
       this.biomeDecorator.grassPerChunk = 1;
    }

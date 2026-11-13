@@ -9,7 +9,7 @@ import net.minecraft.src.WorldGenerator;
 public class BiomeGenForest extends BiomeGenBase {
    public BiomeGenForest(int var1) {
       super(var1);
-      this.spawnableCreatureList.add(new SpawnListEntry(EntityWolf.class, 5, 4, 4));
+      this.spawnableCreatureList.add(new SpawnListEntry(EntityWolf::new, 5, 4, 4));
       this.biomeDecorator.treesPerChunk = 10;
       this.biomeDecorator.grassPerChunk = 2;
    }

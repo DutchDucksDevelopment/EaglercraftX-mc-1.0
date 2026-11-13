@@ -103,7 +103,7 @@ public final class SpawnerAnimals {
                                        EntityLiving var40 = null;
 
                                        try {
-                                          var40 = (EntityLiving)var21.entityClass.getConstructor(new Class[]{World.class}).newInstance(new Object[]{var0});
+                                          var40 = (EntityLiving)var21.entityClass.createEntity(var0);
                                        } catch (Exception var30) {
                                           var30.printStackTrace();
                                           return var31;
@@ -174,7 +174,7 @@ public final class SpawnerAnimals {
 
                      EntityLiving var21;
                      try {
-                        var21 = (EntityLiving)var8.entityClass.getConstructor(new Class[]{World.class}).newInstance(new Object[]{var0});
+                        var21 = (EntityLiving)var8.entityClass.createEntity(var0);
                      } catch (Exception var23) {
                         var23.printStackTrace();
                         continue;

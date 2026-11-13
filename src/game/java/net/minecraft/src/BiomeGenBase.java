@@ -101,17 +101,17 @@ public abstract class BiomeGenBase {
       this.biomeID = var1;
       biomeList[var1] = this;
       this.biomeDecorator = this.createBiomeDecorator();
-      this.spawnableCreatureList.add(new SpawnListEntry(EntitySheep.class, 12, 4, 4));
-      this.spawnableCreatureList.add(new SpawnListEntry(EntityPig.class, 10, 4, 4));
-      this.spawnableCreatureList.add(new SpawnListEntry(EntityChicken.class, 10, 4, 4));
-      this.spawnableCreatureList.add(new SpawnListEntry(EntityCow.class, 8, 4, 4));
-      this.spawnableMonsterList.add(new SpawnListEntry(EntitySpider.class, 10, 4, 4));
-      this.spawnableMonsterList.add(new SpawnListEntry(EntityZombie.class, 10, 4, 4));
-      this.spawnableMonsterList.add(new SpawnListEntry(EntitySkeleton.class, 10, 4, 4));
-      this.spawnableMonsterList.add(new SpawnListEntry(EntityCreeper.class, 10, 4, 4));
-      this.spawnableMonsterList.add(new SpawnListEntry(EntitySlime.class, 10, 4, 4));
-      this.spawnableMonsterList.add(new SpawnListEntry(EntityEnderman.class, 1, 1, 4));
-      this.spawnableWaterCreatureList.add(new SpawnListEntry(EntitySquid.class, 10, 4, 4));
+      this.spawnableCreatureList.add(new SpawnListEntry(EntitySheep::new, 12, 4, 4));
+      this.spawnableCreatureList.add(new SpawnListEntry(EntityPig::new, 10, 4, 4));
+      this.spawnableCreatureList.add(new SpawnListEntry(EntityChicken::new, 10, 4, 4));
+      this.spawnableCreatureList.add(new SpawnListEntry(EntityCow::new, 8, 4, 4));
+      this.spawnableMonsterList.add(new SpawnListEntry(EntitySpider::new, 10, 4, 4));
+      this.spawnableMonsterList.add(new SpawnListEntry(EntityZombie::new, 10, 4, 4));
+      this.spawnableMonsterList.add(new SpawnListEntry(EntitySkeleton::new, 10, 4, 4));
+      this.spawnableMonsterList.add(new SpawnListEntry(EntityCreeper::new, 10, 4, 4));
+      this.spawnableMonsterList.add(new SpawnListEntry(EntitySlime::new, 10, 4, 4));
+      this.spawnableMonsterList.add(new SpawnListEntry(EntityEnderman::new, 1, 1, 4));
+      this.spawnableWaterCreatureList.add(new SpawnListEntry(EntitySquid::new, 10, 4, 4));
    }
 
    protected BiomeDecorator createBiomeDecorator() {
