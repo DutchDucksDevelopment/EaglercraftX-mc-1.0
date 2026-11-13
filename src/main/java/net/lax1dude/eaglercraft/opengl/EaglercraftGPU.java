@@ -38,6 +38,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import static net.lax1dude.eaglercraft.internal.PlatformOpenGL.*;
+import static net.lax1dude.eaglercraft.opengl.FixedFunctionShader.FixedFunctionState.*;
 
 public class EaglercraftGPU extends GlStateManager {
 
@@ -190,6 +191,8 @@ public class EaglercraftGPU extends GlStateManager {
 	private static ByteBuffer displayListBuffer = EagRuntime.allocateByteBuffer(0x100000);
 
 	private static int debugBudget = 300;
+	private static int debugBisectBudget = 20000;
+	private static int debugDataDumps = 0;
 	private static final java.util.HashSet<String> debugSeen = new java.util.HashSet<String>();
 	static void debugLog(String msg) {
 		if (debugBudget <= 0) return;
@@ -275,6 +278,21 @@ public class EaglercraftGPU extends GlStateManager {
 		
 		bindVAOGLArrayBufferNow(dp.vertexBuffer);
 		displayListBuffer.flip();
+		if (dp.attribs == (ATTRIB_TEXTURE | ATTRIB_COLOR) && dp.count >= 64 && debugDataDumps < 3) {
+			++debugDataDumps;
+			int n = (dp.count - 1) * 24;
+			debugLog("DATA count=" + dp.count + " bytes=" + displayListBuffer.remaining()
+					+ " v0 p=" + displayListBuffer.getFloat(0) + "," + displayListBuffer.getFloat(4) + ","
+					+ displayListBuffer.getFloat(8)
+					+ " c=" + (displayListBuffer.get(12) & 0xFF) + "," + (displayListBuffer.get(13) & 0xFF) + ","
+					+ (displayListBuffer.get(14) & 0xFF) + "," + (displayListBuffer.get(15) & 0xFF)
+					+ " t=" + displayListBuffer.getFloat(16) + "," + displayListBuffer.getFloat(20)
+					+ " vN p=" + displayListBuffer.getFloat(n) + "," + displayListBuffer.getFloat(n + 4) + ","
+					+ displayListBuffer.getFloat(n + 8)
+					+ " c=" + (displayListBuffer.get(n + 12) & 0xFF) + "," + (displayListBuffer.get(n + 13) & 0xFF) + ","
+					+ (displayListBuffer.get(n + 14) & 0xFF) + "," + (displayListBuffer.get(n + 15) & 0xFF)
+					+ " t=" + displayListBuffer.getFloat(n + 16) + "," + displayListBuffer.getFloat(n + 20));
+		}
 		_wglBufferData(GL_ARRAY_BUFFER, displayListBuffer, GL_STATIC_DRAW);
 		displayListBuffer.clear();
 		
@@ -330,7 +348,7 @@ public class EaglercraftGPU extends GlStateManager {
 			throw new NullPointerException("Tried to call a display list that does not exist: " + displayList);
 		}
 		if (dp.attribs != -1) {
-			debugLog("call attribs=0x" + Integer.toHexString(dp.attribs) + " state=0x" + Integer.toHexString(FixedFunctionPipeline.getFragmentState()) + " tex0=" + GlStateManager.stateTexture[0] + " tex1=" + GlStateManager.stateTexture[1] + " bound0=" + GlStateManager.boundTexture[0] + " bound1=" + GlStateManager.boundTexture[1] + " color=" + GlStateManager.stateColorR + "," + GlStateManager.stateColorG + "," + GlStateManager.stateColorB + "," + GlStateManager.stateColorA + " blend=" + GlStateManager.stateBlend + " depthMask=" + GlStateManager.stateDepthMask + " texmat0=" + debugTexMat(0));
+			debugLog("call attribs=0x" + Integer.toHexString(dp.attribs) + " state=0x" + Integer.toHexString(FixedFunctionPipeline.getFragmentState()) + " tex0=" + GlStateManager.stateTexture[0] + " tex1=" + GlStateManager.stateTexture[1] + " bound0=" + GlStateManager.boundTexture[0] + " bound1=" + GlStateManager.boundTexture[1] + " color=" + GlStateManager.stateColorR + "," + GlStateManager.stateColorG + "," + GlStateManager.stateColorB + "," + GlStateManager.stateColorA + " blend=" + GlStateManager.stateBlend + " depthMask=" + GlStateManager.stateDepthMask + " texmat0=" + debugTexMat(0) + " lm=" + GlStateManager.textureCoordsX[1] + "," + GlStateManager.textureCoordsY[1] + " alphaRef=" + GlStateManager.stateAlphaTestRef);
 			FixedFunctionPipeline p = FixedFunctionPipeline.setupRenderDisplayList(dp.attribs).update();
 			bindGLVertexArray(dp.vertexArray);
 			if (dp.mode == GL_QUADS) {
@@ -352,6 +370,18 @@ public class EaglercraftGPU extends GlStateManager {
 				}
 			} else {
 				p.drawArrays(dp.mode, 0, dp.count);
+			}
+			if (dp.attribs == (ATTRIB_TEXTURE | ATTRIB_COLOR) && dp.mode == GL_QUADS && dp.count >= 64
+					&& debugBisectBudget > 0) {
+				--debugBisectBudget;
+				int idxType = dp.count > quad16MaxVertices ? GL_UNSIGNED_INT : GL_UNSIGNED_SHORT;
+				debugLog("BISECT count=" + dp.count + " remaining=" + debugBisectBudget);
+				_wglDisable(GL_DEPTH_TEST);
+				FixedFunctionPipeline.debugBisectDraw(dp, STATE_ENABLE_LIGHTMAP, 1.0f, 0.0f, 0.0f, idxType);
+				FixedFunctionPipeline.debugBisectDraw(dp, STATE_ENABLE_ALPHA_TEST, 0.0f, 1.0f, 0.0f, idxType);
+				FixedFunctionPipeline.debugBisectDraw(dp,
+						STATE_ENABLE_LIGHTMAP | STATE_ENABLE_ALPHA_TEST, 0.0f, 0.0f, 1.0f, idxType);
+				_wglEnable(GL_DEPTH_TEST);
 			}
 		}
 	}

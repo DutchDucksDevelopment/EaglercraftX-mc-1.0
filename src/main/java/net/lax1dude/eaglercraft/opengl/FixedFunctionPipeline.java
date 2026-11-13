@@ -146,6 +146,14 @@ public class FixedFunctionPipeline {
 		return self;
 	}
 
+	static void debugBisectDraw(DisplayList dp, int stripBits, float r, float g, float b, int indexType) {
+		FixedFunctionPipeline p = getPipelineInstanceCore(dp.attribs | (getFragmentState() & ~stripBits));
+		p.update();
+		EaglercraftGPU.bindGLVertexArray(dp.vertexArray);
+		_wglUniform4f(p.stateColorUniform4f, r, g, b, 1.0f);
+		p.drawRangeElements(GL_TRIANGLES, 0, dp.count - 1, (dp.count >> 2) * 6, indexType, 0);
+	}
+
 	void drawArrays(int mode, int offset, int count) {
 		EaglercraftGPU.bindGLShaderProgram(shaderProgram);
 		EaglercraftGPU.drawArrays(mode, offset, count);
