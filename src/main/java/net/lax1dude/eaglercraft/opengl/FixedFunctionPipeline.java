@@ -154,6 +154,38 @@ public class FixedFunctionPipeline {
 		p.drawRangeElements(GL_TRIANGLES, 0, dp.count - 1, (dp.count >> 2) * 6, indexType, 0);
 	}
 
+	private static IVertexArrayGL debugProbeVAO = null;
+
+	static void debugBisectFreshVAO(DisplayList dp, int stripBits, float r, float g, float b, int indexType) {
+		FixedFunctionPipeline p = getPipelineInstanceCore(dp.attribs | (getFragmentState() & ~stripBits));
+		p.update();
+		if (debugProbeVAO == null) {
+			debugProbeVAO = EaglercraftGPU.createGLVertexArray();
+		}
+		EaglercraftGPU.bindGLVertexArray(debugProbeVAO);
+		EaglercraftGPU.bindVAOGLArrayBuffer(dp.vertexBuffer);
+		EaglercraftGPU.enableVertexAttribArray(0);
+		EaglercraftGPU.vertexAttribPointer(0, VertexFormat.COMPONENT_POSITION_SIZE,
+				VertexFormat.COMPONENT_POSITION_FORMAT, false, p.attribStride, 0);
+		if (p.attribTextureIndex != -1) {
+			EaglercraftGPU.enableVertexAttribArray(p.attribTextureIndex);
+			EaglercraftGPU.vertexAttribPointer(p.attribTextureIndex, VertexFormat.COMPONENT_TEX_SIZE,
+					VertexFormat.COMPONENT_TEX_FORMAT, false, p.attribStride, p.attribTextureOffset);
+		}
+		if (p.attribColorIndex != -1) {
+			EaglercraftGPU.enableVertexAttribArray(p.attribColorIndex);
+			EaglercraftGPU.vertexAttribPointer(p.attribColorIndex, VertexFormat.COMPONENT_COLOR_SIZE,
+					VertexFormat.COMPONENT_COLOR_FORMAT, true, p.attribStride, p.attribColorOffset);
+		}
+		if (indexType == GL_UNSIGNED_INT) {
+			EaglercraftGPU.attachQuad32EmulationBuffer(dp.count, true);
+		} else {
+			EaglercraftGPU.attachQuad16EmulationBuffer(true);
+		}
+		_wglUniform4f(p.stateColorUniform4f, r, g, b, 1.0f);
+		p.drawRangeElements(GL_TRIANGLES, 0, dp.count - 1, (dp.count >> 2) * 6, indexType, 0);
+	}
+
 	void drawArrays(int mode, int offset, int count) {
 		EaglercraftGPU.bindGLShaderProgram(shaderProgram);
 		EaglercraftGPU.drawArrays(mode, offset, count);

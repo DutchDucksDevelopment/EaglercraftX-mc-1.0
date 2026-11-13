@@ -26,6 +26,7 @@ import com.carrotsearch.hppc.IntObjectMap;
 
 import dev.colbster937.eaglercraft.EaglerMathHelper;
 import net.lax1dude.eaglercraft.EagRuntime;
+import net.lax1dude.eaglercraft.vector.Matrix4f;
 import net.lax1dude.eaglercraft.internal.GLObjectMap;
 import net.lax1dude.eaglercraft.internal.IVertexArrayGL;
 import net.lax1dude.eaglercraft.internal.IBufferGL;
@@ -191,6 +192,7 @@ public class EaglercraftGPU extends GlStateManager {
 	private static ByteBuffer displayListBuffer = EagRuntime.allocateByteBuffer(0x100000);
 
 	private static int debugBudget = 300;
+	private static int debugMvDumps = 0;
 	private static int debugBisectBudget = 20000;
 	private static int debugDataDumps = 0;
 	private static final java.util.HashSet<String> debugSeen = new java.util.HashSet<String>();
@@ -376,11 +378,19 @@ public class EaglercraftGPU extends GlStateManager {
 				--debugBisectBudget;
 				int idxType = dp.count > quad16MaxVertices ? GL_UNSIGNED_INT : GL_UNSIGNED_SHORT;
 				debugLog("BISECT count=" + dp.count + " remaining=" + debugBisectBudget);
+				if (debugMvDumps < 5) {
+					++debugMvDumps;
+					Matrix4f mv = GlStateManager.modelMatrixStack[GlStateManager.modelMatrixStackPointer];
+					System.out.println("[GLDL] MV m00=" + mv.m00 + " m11=" + mv.m11 + " m22=" + mv.m22
+							+ " m03=" + mv.m03 + " m13=" + mv.m13 + " m23=" + mv.m23);
+				}
 				_wglDisable(GL_DEPTH_TEST);
 				FixedFunctionPipeline.debugBisectDraw(dp, STATE_ENABLE_LIGHTMAP, 1.0f, 0.0f, 0.0f, idxType);
 				FixedFunctionPipeline.debugBisectDraw(dp, STATE_ENABLE_ALPHA_TEST, 0.0f, 1.0f, 0.0f, idxType);
 				FixedFunctionPipeline.debugBisectDraw(dp,
 						STATE_ENABLE_LIGHTMAP | STATE_ENABLE_ALPHA_TEST, 0.0f, 0.0f, 1.0f, idxType);
+				FixedFunctionPipeline.debugBisectFreshVAO(dp,
+						STATE_ENABLE_LIGHTMAP | STATE_ENABLE_ALPHA_TEST, 1.0f, 0.0f, 1.0f, idxType);
 				_wglEnable(GL_DEPTH_TEST);
 			}
 		}
