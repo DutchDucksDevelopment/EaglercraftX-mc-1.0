@@ -14,9 +14,9 @@ public class MapGenNetherBridge extends MapGenStructure {
    private List field_40486_a = new ArrayList();
 
    public MapGenNetherBridge() {
-      this.field_40486_a.add(new SpawnListEntry(EntityBlaze.class, 10, 2, 3));
-      this.field_40486_a.add(new SpawnListEntry(EntityPigZombie.class, 10, 4, 4));
-      this.field_40486_a.add(new SpawnListEntry(EntityMagmaCube.class, 3, 4, 4));
+      this.field_40486_a.add(new SpawnListEntry(EntityBlaze::new, 10, 2, 3));
+      this.field_40486_a.add(new SpawnListEntry(EntityPigZombie::new, 10, 4, 4));
+      this.field_40486_a.add(new SpawnListEntry(EntityMagmaCube::new, 3, 4, 4));
    }
 
    public List func_40485_b() {
