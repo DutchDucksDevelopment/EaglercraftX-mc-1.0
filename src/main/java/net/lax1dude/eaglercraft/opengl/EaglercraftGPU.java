@@ -192,6 +192,15 @@ public class EaglercraftGPU extends GlStateManager {
 	private static ByteBuffer displayListBuffer = EagRuntime.allocateByteBuffer(0x100000);
 
 	private static int debugBudget = 300;
+
+	private static void debugCheckGLErrors(String tag) {
+		int err;
+		int cnt = 0;
+		while ((err = _wglGetError()) != 0 && cnt < 5) {
+			++cnt;
+			debugLog("GLERR " + tag + " err=0x" + Integer.toHexString(err));
+		}
+	}
 	private static int debugMvDumps = 0;
 	private static int debugBisectBudget = 20000;
 	private static int debugDataDumps = 0;
@@ -304,6 +313,9 @@ public class EaglercraftGPU extends GlStateManager {
 		
 		FixedFunctionPipeline.setupDisplayList(dp);
 		debugLog("end attribs=0x" + Integer.toHexString(dp.attribs) + " state=0x" + Integer.toHexString(FixedFunctionPipeline.getFragmentState()) + " mode=" + dp.mode);
+		if (dp.attribs == (ATTRIB_TEXTURE | ATTRIB_COLOR) && dp.count >= 64) {
+			debugCheckGLErrors("endList count=" + dp.count);
+		}
 		currentList = null;
 	}
 
@@ -377,6 +389,9 @@ public class EaglercraftGPU extends GlStateManager {
 			} else {
 				p.drawArrays(dp.mode, 0, dp.count);
 			}
+			if (dp.attribs == (ATTRIB_TEXTURE | ATTRIB_COLOR) && dp.mode == GL_QUADS && dp.count >= 64) {
+				debugCheckGLErrors("normalDraw count=" + dp.count);
+			}
 			if (dp.attribs == (ATTRIB_TEXTURE | ATTRIB_COLOR) && dp.mode == GL_QUADS && dp.count >= 64
 					&& debugBisectBudget > 0) {
 				--debugBisectBudget;
@@ -405,6 +420,7 @@ public class EaglercraftGPU extends GlStateManager {
 					GlStateManager.enableCull();
 				}
 				_wglEnable(GL_DEPTH_TEST);
+				debugCheckGLErrors("bisect count=" + dp.count);
 			}
 		}
 	}
