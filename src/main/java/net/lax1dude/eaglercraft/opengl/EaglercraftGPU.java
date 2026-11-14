@@ -34,6 +34,7 @@ import net.lax1dude.eaglercraft.internal.IProgramGL;
 import net.lax1dude.eaglercraft.internal.IQueryGL;
 import net.lax1dude.eaglercraft.internal.ITextureGL;
 import net.lax1dude.eaglercraft.internal.PlatformOpenGL;
+import net.lax1dude.eaglercraft.internal.PlatformRuntime;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -192,6 +193,8 @@ public class EaglercraftGPU extends GlStateManager {
 	private static ByteBuffer displayListBuffer = EagRuntime.allocateByteBuffer(0x100000);
 
 	private static int debugBudget = 5000;
+	private static ByteBuffer debugRetained = null;
+	private static int debugRetainedCount = 0;
 
 	private static void debugCheckGLErrors(String tag) {
 		int err;
@@ -308,6 +311,13 @@ public class EaglercraftGPU extends GlStateManager {
 					+ " v2 p=" + displayListBuffer.getFloat(48) + "," + displayListBuffer.getFloat(52) + ","
 					+ displayListBuffer.getFloat(56));
 		}
+		if (dp.attribs == (ATTRIB_TEXTURE | ATTRIB_COLOR) && dp.count >= 64 && debugRetained == null) {
+			debugRetainedCount = dp.count;
+			debugRetained = PlatformRuntime.allocateByteBuffer(displayListBuffer.remaining());
+			debugRetained.put(displayListBuffer);
+			debugRetained.flip();
+			displayListBuffer.position(0);
+		}
 		_wglBufferData(GL_ARRAY_BUFFER, displayListBuffer, GL_STATIC_DRAW);
 		displayListBuffer.clear();
 		
@@ -401,11 +411,9 @@ public class EaglercraftGPU extends GlStateManager {
 					++debugMvDumps;
 					Matrix4f mv = GlStateManager.modelMatrixStack[GlStateManager.modelMatrixStackPointer];
 					System.out.println("[GLDL] MV m00=" + mv.m00 + " m11=" + mv.m11 + " m22=" + mv.m22
-							+ " m03=" + mv.m03 + " m13=" + mv.m13 + " m23=" + mv.m23);
+							+ " tx=" + mv.m30 + " ty=" + mv.m31 + " tz=" + mv.m32);
 				}
 				_wglDisable(GL_DEPTH_TEST);
-				FixedFunctionPipeline.debugBisectDraw(dp, STATE_ENABLE_LIGHTMAP, 1.0f, 0.0f, 0.0f, idxType);
-				FixedFunctionPipeline.debugBisectDraw(dp, STATE_ENABLE_ALPHA_TEST, 0.0f, 1.0f, 0.0f, idxType);
 				FixedFunctionPipeline.debugBisectDraw(dp,
 						STATE_ENABLE_LIGHTMAP | STATE_ENABLE_ALPHA_TEST, 0.0f, 0.0f, 1.0f, idxType);
 				FixedFunctionPipeline.debugBisectFreshVAO(dp,
@@ -418,6 +426,10 @@ public class EaglercraftGPU extends GlStateManager {
 						STATE_ENABLE_LIGHTMAP | STATE_ENABLE_ALPHA_TEST, 1.0f, 1.0f, 0.0f, idxType);
 				if (cullWasOn) {
 					GlStateManager.enableCull();
+				}
+				if (debugRetained != null) {
+					FixedFunctionPipeline.setupDirect(debugRetained, dp.attribs, true).update()
+							.drawDirectArrays(GL_QUADS, 0, debugRetainedCount);
 				}
 				_wglEnable(GL_DEPTH_TEST);
 				debugCheckGLErrors("bisect count=" + dp.count);
