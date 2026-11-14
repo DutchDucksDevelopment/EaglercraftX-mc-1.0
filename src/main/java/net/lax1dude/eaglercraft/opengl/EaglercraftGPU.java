@@ -293,7 +293,11 @@ public class EaglercraftGPU extends GlStateManager {
 					+ displayListBuffer.getFloat(n + 8)
 					+ " c=" + (displayListBuffer.get(n + 12) & 0xFF) + "," + (displayListBuffer.get(n + 13) & 0xFF) + ","
 					+ (displayListBuffer.get(n + 14) & 0xFF) + "," + (displayListBuffer.get(n + 15) & 0xFF)
-					+ " t=" + displayListBuffer.getFloat(n + 16) + "," + displayListBuffer.getFloat(n + 20));
+					+ " t=" + displayListBuffer.getFloat(n + 16) + "," + displayListBuffer.getFloat(n + 20)
+					+ " v1 p=" + displayListBuffer.getFloat(24) + "," + displayListBuffer.getFloat(28) + ","
+					+ displayListBuffer.getFloat(32)
+					+ " v2 p=" + displayListBuffer.getFloat(48) + "," + displayListBuffer.getFloat(52) + ","
+					+ displayListBuffer.getFloat(56));
 		}
 		_wglBufferData(GL_ARRAY_BUFFER, displayListBuffer, GL_STATIC_DRAW);
 		displayListBuffer.clear();
@@ -350,7 +354,7 @@ public class EaglercraftGPU extends GlStateManager {
 			throw new NullPointerException("Tried to call a display list that does not exist: " + displayList);
 		}
 		if (dp.attribs != -1) {
-			debugLog("call attribs=0x" + Integer.toHexString(dp.attribs) + " state=0x" + Integer.toHexString(FixedFunctionPipeline.getFragmentState()) + " tex0=" + GlStateManager.stateTexture[0] + " tex1=" + GlStateManager.stateTexture[1] + " bound0=" + GlStateManager.boundTexture[0] + " bound1=" + GlStateManager.boundTexture[1] + " color=" + GlStateManager.stateColorR + "," + GlStateManager.stateColorG + "," + GlStateManager.stateColorB + "," + GlStateManager.stateColorA + " blend=" + GlStateManager.stateBlend + " depthMask=" + GlStateManager.stateDepthMask + " texmat0=" + debugTexMat(0) + " lm=" + GlStateManager.textureCoordsX[1] + "," + GlStateManager.textureCoordsY[1] + " alphaRef=" + GlStateManager.stateAlphaTestRef);
+			debugLog("call attribs=0x" + Integer.toHexString(dp.attribs) + " state=0x" + Integer.toHexString(FixedFunctionPipeline.getFragmentState()) + " tex0=" + GlStateManager.stateTexture[0] + " tex1=" + GlStateManager.stateTexture[1] + " bound0=" + GlStateManager.boundTexture[0] + " bound1=" + GlStateManager.boundTexture[1] + " color=" + GlStateManager.stateColorR + "," + GlStateManager.stateColorG + "," + GlStateManager.stateColorB + "," + GlStateManager.stateColorA + " blend=" + GlStateManager.stateBlend + " depthMask=" + GlStateManager.stateDepthMask + " texmat0=" + debugTexMat(0) + " lm=" + GlStateManager.textureCoordsX[1] + "," + GlStateManager.textureCoordsY[1] + " alphaRef=" + GlStateManager.stateAlphaTestRef + " cull=" + GlStateManager.stateCull + " cullFace=0x" + Integer.toHexString(GlStateManager.stateCullFace));
 			FixedFunctionPipeline p = FixedFunctionPipeline.setupRenderDisplayList(dp.attribs).update();
 			bindGLVertexArray(dp.vertexArray);
 			if (dp.mode == GL_QUADS) {
@@ -391,6 +395,15 @@ public class EaglercraftGPU extends GlStateManager {
 						STATE_ENABLE_LIGHTMAP | STATE_ENABLE_ALPHA_TEST, 0.0f, 0.0f, 1.0f, idxType);
 				FixedFunctionPipeline.debugBisectFreshVAO(dp,
 						STATE_ENABLE_LIGHTMAP | STATE_ENABLE_ALPHA_TEST, 1.0f, 0.0f, 1.0f, idxType);
+				boolean cullWasOn = GlStateManager.stateCull;
+				if (cullWasOn) {
+					GlStateManager.disableCull();
+				}
+				FixedFunctionPipeline.debugBisectDraw(dp,
+						STATE_ENABLE_LIGHTMAP | STATE_ENABLE_ALPHA_TEST, 1.0f, 1.0f, 0.0f, idxType);
+				if (cullWasOn) {
+					GlStateManager.enableCull();
+				}
 				_wglEnable(GL_DEPTH_TEST);
 			}
 		}
