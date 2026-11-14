@@ -150,6 +150,7 @@ public class GuiScreenEditCape extends GuiScreen {
 		GL11.glScalef(1.0F, -1.0F, 1.0F);
 		GL11.glTranslatef(0.0F, 1.0F, 0.0F);
 		GL11.glRotatef(((yy - my) * -0.06f), 1.0f, 0.0f, 0.0f);
+		GL11.glRotatef(180.0f, 0.0f, 1.0f, 0.0f);
 		GL11.glRotatef(((xx - mx) * 0.06f), 0.0f, 1.0f, 0.0f);
 		GL11.glTranslatef(0.0F, -1.0F, 0.0F);
 
@@ -159,7 +160,7 @@ public class GuiScreenEditCape extends GuiScreen {
 
 		playerModel.render(null, 0.0f, 0.0f, (float) (System.currentTimeMillis() % 100000) / 50f, ((xx - mx) * 0.06f), ((yy - my) * -0.1f), 0.0625F);
 
-		int capeTex = DefaultCapes.getCapeTexture(EaglerProfile.presetCapeId);
+		int capeTex = DefaultCapes.getCapeTexture(selectedSlot - 1);
 		if (capeTex != -1) {
 			Minecraft.getMinecraft().renderEngine.bindTexture(capeTex);
 			playerModel.renderCloak(0.0625F);
