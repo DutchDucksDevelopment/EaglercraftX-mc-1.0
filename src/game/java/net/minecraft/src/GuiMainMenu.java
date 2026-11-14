@@ -7,8 +7,10 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Random;
+import net.lax1dude.eaglercraft.EagRuntime;
 import net.lax1dude.eaglercraft.opengl.ImageData;
 import net.lax1dude.eaglercraft.profile.GuiScreenEditProfile;
+import dev.colbster937.eaglercraft.rp.TexturePack;
 import dev.colbster937.eaglercraft.utils.I18n;
 import net.minecraft.src.GuiButton;
 import net.minecraft.src.GuiOptions;
@@ -31,7 +33,7 @@ public class GuiMainMenu extends GuiScreen {
    public GuiMainMenu() {
       try {
          ArrayList var1 = new ArrayList();
-         BufferedReader var2 = new BufferedReader(new InputStreamReader(GuiMainMenu.class.getResourceAsStream("/title/splashes.txt"), Charset.forName("UTF-8")));
+         BufferedReader var2 = new BufferedReader(new InputStreamReader(TexturePack.getResourceAsStream("/title/splashes.txt"), Charset.forName("UTF-8")));
          String var3 = "";
 
          while((var3 = var2.readLine()) != null) {
@@ -82,7 +84,7 @@ public class GuiMainMenu extends GuiScreen {
       StringTranslate var2 = StringTranslate.getInstance();
       int var4 = this.height / 4 + 48;
       this.controlList.add(new GuiButton(1, this.width / 2 - 100, var4, var2.translateKey("menu.singleplayer")));
-      this.controlList.add(this.multiplayerButton = new GuiButton(2, this.width / 2 - 100, var4 + 24, var2.translateKey("menu.multiplayer")));
+      this.controlList.add(this.multiplayerButton = new GuiButton(2, this.width / 2 - 100, var4 + 24, "Fork on GitHub"));
       this.controlList.add(new GuiButton(3, this.width / 2 - 100, var4 + 48, var2.translateKey("menu.mods")));
       if(this.mc.hideQuitButton) {
          this.controlList.add(new GuiButton(0, this.width / 2 - 100, var4 + 72, var2.translateKey("menu.options")));
@@ -107,9 +109,11 @@ public class GuiMainMenu extends GuiScreen {
       }
 
       if(var1.id == 2) {
+         EagRuntime.openLink("https://github.com/DutchDucksDevelopment/EaglercraftX-mc-1.0");
       }
 
       if(var1.id == 3) {
+         this.mc.displayGuiScreen(new GuiTexturePacks(this));
       }
 
       if(var1.id == 4) {
@@ -284,6 +288,16 @@ public class GuiMainMenu extends GuiScreen {
       this.drawString(this.fontRenderer, "Minecraft 1.0.0", 2, this.height - 10, 16777215);
       String var9 = "Copyright Mojang AB. Do not distribute!";
       this.drawString(this.fontRenderer, var9, this.width - this.fontRenderer.getStringWidth(var9) - 2, this.height - 10, 16777215);
+      int var10 = this.fontRenderer.getStringWidth("credits.txt");
+      this.drawString(this.fontRenderer, "credits.txt", this.width - var10 - 4, 4, 16777215);
+      this.drawRect(this.width - var10 - 4, 13, this.width - 4, 14, 16777215);
       super.drawScreen(var1, var2, var3);
+   }
+
+   protected void mouseClicked(int var1, int var2, int var3) {
+      super.mouseClicked(var1, var2, var3);
+      if(var1 >= this.width - this.fontRenderer.getStringWidth("credits.txt") - 6 && var1 < this.width - 2 && var2 >= 2 && var2 < 16) {
+         EagRuntime.openLink("https://github.com/DutchDucksDevelopment/EaglercraftX-mc-1.0/blob/master/resources/eagler/credits.txt");
+      }
    }
 }

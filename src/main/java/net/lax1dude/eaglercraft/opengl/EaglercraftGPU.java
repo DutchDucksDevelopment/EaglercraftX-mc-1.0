@@ -189,22 +189,7 @@ public class EaglercraftGPU extends GlStateManager {
 	private static DisplayList currentList = null;
 	private static ByteBuffer displayListBuffer = EagRuntime.allocateByteBuffer(0x100000);
 
-	private static int debugBudget = 100;
-	private static final java.util.HashSet<String> debugSeen = new java.util.HashSet<String>();
-	static void debugLog(String msg) {
-		if (debugBudget <= 0) return;
-		if (!debugSeen.add(msg)) return;
-		--debugBudget;
-		System.out.println("[GLDL] " + msg);
-	}
-	private static String debugTexMat(int unit) {
-		int ptr = GlStateManager.textureMatrixStackPointer[unit];
-		net.lax1dude.eaglercraft.vector.Matrix4f m = GlStateManager.textureMatrixStack[unit][ptr];
-		return m.m00 + "," + m.m11 + "," + m.m30 + "," + m.m31;
-	}
-
 	public static void glNewList(int target, int op) {
-		debugLog("new target=" + target + " state=0x" + Integer.toHexString(FixedFunctionPipeline.getFragmentState()));
 		if (currentList != null) {
 			throw new IllegalStateException("A display list is already being compiled you eagler!");
 		}
@@ -280,7 +265,6 @@ public class EaglercraftGPU extends GlStateManager {
 		displayListBuffer.clear();
 		
 		FixedFunctionPipeline.setupDisplayList(dp);
-		debugLog("end attribs=0x" + Integer.toHexString(dp.attribs) + " state=0x" + Integer.toHexString(FixedFunctionPipeline.getFragmentState()) + " mode=" + dp.mode + " count=" + dp.count);
 		currentList = null;
 	}
 
@@ -331,7 +315,6 @@ public class EaglercraftGPU extends GlStateManager {
 			throw new NullPointerException("Tried to call a display list that does not exist: " + displayList);
 		}
 		if (dp.attribs != -1) {
-			debugLog("call list=" + displayList + " attribs=0x" + Integer.toHexString(dp.attribs) + " state=0x" + Integer.toHexString(FixedFunctionPipeline.getFragmentState()) + " tex0=" + GlStateManager.stateTexture[0] + " tex1=" + GlStateManager.stateTexture[1] + " bound0=" + GlStateManager.boundTexture[0] + " bound1=" + GlStateManager.boundTexture[1] + " texmat0=" + debugTexMat(0));
 			FixedFunctionPipeline p = FixedFunctionPipeline.setupRenderDisplayList(dp.attribs).update();
 			bindGLVertexArray(dp.vertexArray);
 			if (dp.mode == GL_QUADS) {
@@ -880,7 +863,6 @@ public class EaglercraftGPU extends GlStateManager {
 			displayListBuffer.put(buffer);
 			lastRender = null;
 		} else {
-			debugLog("direct attribs=0x" + Integer.toHexString(attrib) + " state=0x" + Integer.toHexString(FixedFunctionPipeline.getFragmentState()) + " mode=" + mode + " count=" + count);
 			lastRender = FixedFunctionPipeline.setupDirect(buffer, attrib, mode == GL_QUADS).update();
 			lastRender.drawDirectArrays(mode, 0, count);
 			lastMode = mode;

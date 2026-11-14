@@ -96,8 +96,6 @@ public class FixedFunctionPipeline {
 		EaglercraftGPU.bindGLVertexArray(list.vertexArray);
 		EaglercraftGPU.bindVAOGLArrayBuffer(list.vertexBuffer);
 
-		EaglercraftGPU.debugLog("setupDL baseState=0x" + Integer.toHexString(baseState) + " attribs=0x" + Integer.toHexString(list.attribs) + " texIdx=" + self.attribTextureIndex + " colorIdx=" + self.attribColorIndex + " normalIdx=" + self.attribNormalIndex);
-
 		EaglercraftGPU.enableVertexAttribArray(0);
 		EaglercraftGPU.vertexAttribPointer(0, VertexFormat.COMPONENT_POSITION_SIZE,
 				VertexFormat.COMPONENT_POSITION_FORMAT, false, self.attribStride, 0);
@@ -140,9 +138,7 @@ public class FixedFunctionPipeline {
 		} else {
 			self = getPipelineInstanceCore(baseState);
 		}
-
-		EaglercraftGPU.debugLog("setupCall baseState=0x" + Integer.toHexString(baseState) + " texIdx=" + self.attribTextureIndex + " colorIdx=" + self.attribColorIndex + " normalIdx=" + self.attribNormalIndex);
-
+		
 		return self;
 	}
 

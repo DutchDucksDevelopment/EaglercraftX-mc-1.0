@@ -605,6 +605,14 @@ public class RenderGlobal implements IWorldAccess {
    private int renderSortedRenderers(int var1, int var2, int var3, double var4) {
       this.glRenderLists.clear();
       int var6 = 0;
+      EntityLiving var19 = this.mc.renderViewEntity;
+      double var20 = var19.lastTickPosX + (var19.posX - var19.lastTickPosX) * var4;
+      double var10 = var19.lastTickPosY + (var19.posY - var19.lastTickPosY) * var4;
+      double var12 = var19.lastTickPosZ + (var19.posZ - var19.lastTickPosZ) * var4;
+      float var25 = this.mc.entityRenderer.fogEndDistance;
+      boolean var26 = var25 < 3.0E38F;
+      double var27 = var26 ? (double)(var25 + 8.0F) : 0.0D;
+      double var28 = var27 * var27;
 
       for(int var7 = var1; var7 < var2; ++var7) {
          if(var3 == 0) {
@@ -623,16 +631,29 @@ public class RenderGlobal implements IWorldAccess {
          if(!this.sortedWorldRenderers[var7].skipRenderPass[var3] && this.sortedWorldRenderers[var7].isInFrustum && (!this.occlusionEnabled || this.sortedWorldRenderers[var7].isVisible)) {
             int var8 = this.sortedWorldRenderers[var7].getGLCallListForPass(var3);
             if(var8 >= 0) {
+               if(var26) {
+                  /* use posX/posY/posZ (true world coords). posXMinus/posZMinus
+                     are world coords rounded down to a multiple of 1024 (the
+                     clip-offset scheme) and are up to 1024 blocks away from the
+                     camera - using them culled EVERY chunk (the invisible-terrain
+                     bug). posX + sizeWidth = the chunk's real world AABB. */
+                  WorldRenderer var29 = this.sortedWorldRenderers[var7];
+                  double var30 = (double)var29.posX;
+                  double var31 = (double)var29.posY;
+                  double var32 = (double)var29.posZ;
+                  double var33 = Math.min(Math.max(var20, var30), var30 + (double)var29.sizeWidth) - var20;
+                  double var34 = Math.min(Math.max(var10, var31), var31 + (double)var29.sizeHeight) - var10;
+                  double var35 = Math.min(Math.max(var12, var32), var32 + (double)var29.sizeDepth) - var12;
+                  if(var33 * var33 + var34 * var34 + var35 * var35 > var28) {
+                     continue;
+                  }
+               }
                this.glRenderLists.add(this.sortedWorldRenderers[var7]);
                ++var6;
             }
          }
       }
 
-      EntityLiving var19 = this.mc.renderViewEntity;
-      double var20 = var19.lastTickPosX + (var19.posX - var19.lastTickPosX) * var4;
-      double var10 = var19.lastTickPosY + (var19.posY - var19.lastTickPosY) * var4;
-      double var12 = var19.lastTickPosZ + (var19.posZ - var19.lastTickPosZ) * var4;
       int var14 = 0;
 
       for(int var15 = 0; var15 < this.allRenderLists.length; ++var15) {
@@ -1161,10 +1182,27 @@ public class RenderGlobal implements IWorldAccess {
                Collections.sort(var7, var5);
             }
 
-            for(int var21 = var7.size() - 1; var21 >= 0; --var21) {
-               WorldRenderer var23 = (WorldRenderer)var7.get(var21);
+            /* 1.0 port perf: vanilla rebuilt EVERY dirty renderer within 16 blocks in a
+               single call. Native JVM chunk rebuilds cost ~1ms so it was only a stutter,
+               but on TeaVM each rebuild costs 5-15ms, so crossing a chunk boundary (which
+               marks dozens of renderers dirty) caused 500ms+ frame spikes (fps dropping
+               to ~2). Rebuild at least 4, then stop after an 8ms budget and re-queue the
+               rest for the following frames. */
+            int var30 = 0;
+            long var31 = System.nanoTime();
+            int var32 = var7.size() - 1;
+            for(; var32 >= 0; --var32) {
+               WorldRenderer var23 = (WorldRenderer)var7.get(var32);
                var23.updateRenderer();
                var23.needsUpdate = false;
+               if(var7.size() - var32 >= 4 && System.nanoTime() - var31 > 8000000L) {
+                  var30 = var32;
+                  break;
+               }
+            }
+
+            for(int var33 = var30 - 1; var33 >= 0; --var33) {
+               this.worldRenderersToUpdate.add(var7.get(var33));
             }
          }
 

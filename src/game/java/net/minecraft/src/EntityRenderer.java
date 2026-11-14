@@ -46,6 +46,8 @@ public class EntityRenderer {
    public static int anaglyphField;
    private Minecraft mc;
    private float farPlaneDistance = 0.0F;
+   /** Sodium-style fog culling: distance at which terrain is 100% fogged (invisible). MAX_VALUE = no culling. */
+   public float fogEndDistance = Float.MAX_VALUE;
    public ItemRenderer itemRenderer;
    private int rendererUpdateCount;
    private Entity pointedEntity = null;
@@ -596,6 +598,12 @@ public class EntityRenderer {
       Profiler.startSection("lightTex");
       if(this.lightmapUpdateNeeded) {
          this.updateLightmap();
+         /* reset the flag: without this the lightmap texture was being fully
+            redefined ~120x/sec (twice per frame) while actively sampled on
+            texture unit 1, which on some drivers (ANGLE/V3D) reads back a
+            glitched texel for a frame = water flickering dark/bright.
+            Content only changes per tick, so upload once per tick. */
+         this.lightmapUpdateNeeded = false;
       }
 
       Profiler.endSection();
@@ -691,6 +699,12 @@ public class EntityRenderer {
       Profiler.startSection("lightTex");
       if(this.lightmapUpdateNeeded) {
          this.updateLightmap();
+         /* reset the flag: without this the lightmap texture was being fully
+            redefined ~120x/sec (twice per frame) while actively sampled on
+            texture unit 1, which on some drivers (ANGLE/V3D) reads back a
+            glitched texel for a frame = water flickering dark/bright.
+            Content only changes per tick, so upload once per tick. */
+         this.lightmapUpdateNeeded = false;
       }
 
       GL11.glEnable(2884 /*GL_CULL_FACE*/);
@@ -1199,6 +1213,7 @@ public class EntityRenderer {
 
    private void setupFog(int var1, float var2) {
       EntityLiving var3 = this.mc.renderViewEntity;
+      this.fogEndDistance = Float.MAX_VALUE;
       if(var1 == 999) {
          GL11.glFog(2918 /*GL_FOG_COLOR*/, this.setFogColorBuffer(0.0F, 0.0F, 0.0F, 1.0F));
          GL11.glFogi(2917 /*GL_FOG_MODE*/, 9729 /*GL_LINEAR*/);
@@ -1292,6 +1307,10 @@ public class EntityRenderer {
                }
             }
 
+            /* sodium-style fog culling: record the real fog end so RenderGlobal
+               can skip chunks that are 100% fogged (invisible against the sky).
+               NOTE: must be the fog value actually applied to terrain below. */
+            this.fogEndDistance = var12;
             GL11.glFogi(2917 /*GL_FOG_MODE*/, 9729 /*GL_LINEAR*/);
             if(var1 < 0) {
                GL11.glFogf(2915 /*GL_FOG_START*/, 0.0F);
