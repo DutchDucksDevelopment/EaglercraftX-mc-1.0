@@ -19,17 +19,7 @@ public class SaveFormatOld implements ISaveFormat {
 	}
 
 	public List getSaveList() {
-		ArrayList var1 = new ArrayList();
-
-		for(int var2 = 0; var2 < 5; ++var2) {
-			String var3 = "World" + (var2 + 1);
-			WorldInfo var4 = this.getWorldInfo(var3);
-			if(var4 != null) {
-				var1.add(new SaveFormatComparator(var3, "", var4.getLastTimePlayed(), var4.getSizeOnDisk(), var4.getGameType(), false, var4.isHardcoreModeEnabled()));
-			}
-		}
-
-		return var1;
+		return SaveUtils.scanWorlds();
 	}
 
 	public void flushCache() {
