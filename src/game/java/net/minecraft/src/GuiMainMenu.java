@@ -288,13 +288,15 @@ public class GuiMainMenu extends GuiScreen {
       this.drawString(this.fontRenderer, "Minecraft 1.0.0", 2, this.height - 10, 16777215);
       String var9 = "Copyright Mojang AB. Do not distribute!";
       this.drawString(this.fontRenderer, var9, this.width - this.fontRenderer.getStringWidth(var9) - 2, this.height - 10, 16777215);
-      this.drawString(this.fontRenderer, "credits.txt", this.width - this.fontRenderer.getStringWidth("credits.txt") - 4, 4, 16777215);
+      int var10 = this.fontRenderer.getStringWidth("credits.txt");
+      this.drawString(this.fontRenderer, "credits.txt", this.width - var10 - 4, 4, 16777215);
+      this.drawRect(this.width - var10 - 4, 13, this.width - 4, 14, 16777215);
       super.drawScreen(var1, var2, var3);
    }
 
    protected void mouseClicked(int var1, int var2, int var3) {
       super.mouseClicked(var1, var2, var3);
-      if(var1 >= this.width - this.fontRenderer.getStringWidth("credits.txt") - 6 && var1 < this.width - 2 && var2 >= 2 && var2 < 14) {
+      if(var1 >= this.width - this.fontRenderer.getStringWidth("credits.txt") - 6 && var1 < this.width - 2 && var2 >= 2 && var2 < 16) {
          EagRuntime.openLink("https://github.com/DutchDucksDevelopment/EaglercraftX-mc-1.0/blob/master/resources/eagler/credits.txt");
       }
    }
