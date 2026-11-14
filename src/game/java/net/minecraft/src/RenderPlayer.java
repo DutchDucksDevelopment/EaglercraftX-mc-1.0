@@ -16,6 +16,8 @@ import net.minecraft.src.ModelBiped;
 import net.minecraft.src.RenderBlocks;
 import net.minecraft.src.RenderLiving;
 import net.minecraft.src.Tessellator;
+import net.lax1dude.eaglercraft.profile.DefaultCapes;
+import net.lax1dude.eaglercraft.profile.EaglerProfile;
 import org.lwjgl.opengl.GL11;
 
 public class RenderPlayer extends RenderLiving {
@@ -167,45 +169,48 @@ public class RenderPlayer extends RenderLiving {
          }
       }
 
-      /* 1.0 port: capes disabled like the 1.2.5 port - the cloak URL download always fails
-         on EaglercraftX and renders the purple-black missing-texture checkerboard. */
-      //       if(this.loadDownloadableImageTexture(var1.playerCloakUrl, (String)null)) {
-      //          GL11.glPushMatrix();
-      //          GL11.glTranslatef(0.0F, 0.0F, 0.125F);
-      //          double var20 = var1.field_20066_r + (var1.field_20063_u - var1.field_20066_r) * (double)var2 - (var1.prevPosX + (var1.posX - var1.prevPosX) * (double)var2);
-      //          double var23 = var1.field_20065_s + (var1.field_20062_v - var1.field_20065_s) * (double)var2 - (var1.prevPosY + (var1.posY - var1.prevPosY) * (double)var2);
-      //          double var8 = var1.field_20064_t + (var1.field_20061_w - var1.field_20064_t) * (double)var2 - (var1.prevPosZ + (var1.posZ - var1.prevPosZ) * (double)var2);
-      //          float var10 = var1.prevRenderYawOffset + (var1.renderYawOffset - var1.prevRenderYawOffset) * var2;
-      //          double var11 = (double)MathHelper.sin(var10 * 3.1415927F / 180.0F);
-      //          double var13 = (double)(-MathHelper.cos(var10 * 3.1415927F / 180.0F));
-      //          float var15 = (float)var23 * 10.0F;
-      //          if(var15 < -6.0F) {
-      //             var15 = -6.0F;
-      //          }
+      /* 1.0 port: use the EaglercraftX preset cape selected in the profile screen's
+         Cape tab instead of the vanilla cloak URL download (which always fails on
+         EaglercraftX and renders the purple-black missing-texture checkerboard). */
+      int capeTexId = DefaultCapes.getCapeTexture(EaglerProfile.presetCapeId);
+      if(capeTexId != -1) {
+         Minecraft.getMinecraft().renderEngine.bindTexture(capeTexId);
+         GL11.glPushMatrix();
+         GL11.glTranslatef(0.0F, 0.0F, 0.125F);
+         double cvar1 = var1.field_20066_r + (var1.field_20063_u - var1.field_20066_r) * (double)var2 - (var1.prevPosX + (var1.posX - var1.prevPosX) * (double)var2);
+         double cvar2 = var1.field_20065_s + (var1.field_20062_v - var1.field_20065_s) * (double)var2 - (var1.prevPosY + (var1.posY - var1.prevPosY) * (double)var2);
+         double cvar3 = var1.field_20064_t + (var1.field_20061_w - var1.field_20064_t) * (double)var2 - (var1.prevPosZ + (var1.posZ - var1.prevPosZ) * (double)var2);
+         float cvar4 = var1.prevRenderYawOffset + (var1.renderYawOffset - var1.prevRenderYawOffset) * var2;
+         double cvar5 = (double)MathHelper.sin(cvar4 * 3.1415927F / 180.0F);
+         double cvar6 = (double)(-MathHelper.cos(cvar4 * 3.1415927F / 180.0F));
+         float cvar7 = (float)cvar2 * 10.0F;
+         if(cvar7 < -6.0F) {
+            cvar7 = -6.0F;
+         }
 
-      //          if(var15 > 32.0F) {
-      //             var15 = 32.0F;
-      //          }
+         if(cvar7 > 32.0F) {
+            cvar7 = 32.0F;
+         }
 
-      //          float var16 = (float)(var20 * var11 + var8 * var13) * 100.0F;
-      //          float var17 = (float)(var20 * var13 - var8 * var11) * 100.0F;
-      //          if(var16 < 0.0F) {
-      //             var16 = 0.0F;
-      //          }
+         float cvar8 = (float)(cvar1 * cvar5 + cvar3 * cvar6) * 100.0F;
+         float cvar9 = (float)(cvar1 * cvar6 - cvar3 * cvar5) * 100.0F;
+         if(cvar8 < 0.0F) {
+            cvar8 = 0.0F;
+         }
 
-      //          float var18 = var1.prevCameraYaw + (var1.cameraYaw - var1.prevCameraYaw) * var2;
-      //          var15 = var15 + MathHelper.sin((var1.prevDistanceWalkedModified + (var1.distanceWalkedModified - var1.prevDistanceWalkedModified) * var2) * 6.0F) * 32.0F * var18;
-      //          if(var1.isSneaking()) {
-      //             var15 += 25.0F;
-      //          }
+         float cvar10 = var1.prevCameraYaw + (var1.cameraYaw - var1.prevCameraYaw) * var2;
+         cvar7 = cvar7 + MathHelper.sin((var1.prevDistanceWalkedModified + (var1.distanceWalkedModified - var1.prevDistanceWalkedModified) * var2) * 6.0F) * 32.0F * cvar10;
+         if(var1.isSneaking()) {
+            cvar7 += 25.0F;
+         }
 
-      //          GL11.glRotatef(6.0F + var16 / 2.0F + var15, 1.0F, 0.0F, 0.0F);
-      //          GL11.glRotatef(var17 / 2.0F, 0.0F, 0.0F, 1.0F);
-      //          GL11.glRotatef(-var17 / 2.0F, 0.0F, 1.0F, 0.0F);
-      //          GL11.glRotatef(180.0F, 0.0F, 1.0F, 0.0F);
-      //          this.modelBipedMain.renderCloak(0.0625F);
-      //          GL11.glPopMatrix();
-      //       }
+         GL11.glRotatef(6.0F + cvar8 / 2.0F + cvar7, 1.0F, 0.0F, 0.0F);
+         GL11.glRotatef(cvar9 / 2.0F, 0.0F, 0.0F, 1.0F);
+         GL11.glRotatef(-cvar9 / 2.0F, 0.0F, 1.0F, 0.0F);
+         GL11.glRotatef(180.0F, 0.0F, 1.0F, 0.0F);
+         this.modelBipedMain.renderCloak(0.0625F);
+         GL11.glPopMatrix();
+      }
 
       ItemStack var21 = var1.inventory.getCurrentItem();
       if(var21 != null) {

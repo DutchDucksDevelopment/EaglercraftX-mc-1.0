@@ -33,6 +33,7 @@ public class EaglerProfile {
 
 	public static int presetSkinId;
 	public static int customSkinId;
+	public static int presetCapeId = -1;
 	public static ArrayList<EaglerProfileSkin> skins = new ArrayList<>();
 
 	public static class EaglerProfileSkin {
@@ -115,12 +116,20 @@ public class EaglerProfile {
 		if(loadPresetSkin > 0) {
 			presetSkinId = loadPresetSkin;
 		}
+
+		if(profile.hasKey("presetCape")) {
+			int loadPresetCape = profile.getInteger("presetCape");
+			if(loadPresetCape >= -1 && loadPresetCape < DefaultCapes.capeNames.length - 1) {
+				presetCapeId = loadPresetCape;
+			}
+		}
 	}
 
 	public static byte[] write() {
 		NBTTagCompound profile = new NBTTagCompound();
 		profile.setString("username", username);
 		profile.setInteger("presetSkin", presetSkinId);
+		profile.setInteger("presetCape", presetCapeId);
 		EaglerOutputStream bao = new EaglerOutputStream();
 		try {
 			CompressedStreamTools.writeCompressed(profile, bao);

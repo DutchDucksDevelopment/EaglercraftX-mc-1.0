@@ -114,6 +114,11 @@ public class GuiScreenEditProfile extends GuiScreen {
 		this.drawCenteredString(this.fontRenderer, this.screenTitle, this.width / 2, 15, 16777215);
 		this.drawString(this.fontRenderer, I18n.format("profile.screenname"), this.width / 2 - 20, this.height / 6 + 8 + trans, 10526880);
 		this.drawString(this.fontRenderer, I18n.format("profile.playerSkin"), this.width / 2 - 20, this.height / 6 + 66 + trans, 10526880);
+		String capesText = I18n.format("profile.capes");
+		int capesX = this.width / 2 + 60;
+		int capesY = this.height / 6 + 66 + trans;
+		this.drawString(this.fontRenderer, capesText, capesX, capesY, 10526880);
+		this.drawRect(capesX, capesY + 9, capesX + this.fontRenderer.getStringWidth(capesText), capesY + 10, 10526880);
 		
 		mousex = mx;
 		mousey = my;
@@ -373,6 +378,14 @@ public class GuiScreenEditProfile extends GuiScreen {
 		this.username.mouseClicked(par1, par2, par3);
 		
 		if (par3 == 0) {
+			String capesText = I18n.format("profile.capes");
+			int capesX = this.width / 2 + 60;
+			int capesY = this.height / 6 + 66 + trans;
+			if(par1 >= capesX && par1 < capesX + this.fontRenderer.getStringWidth(capesText) && par2 >= capesY - 2 && par2 < capesY + 11) {
+				this.mc.displayGuiScreen(new GuiScreenEditCape(this));
+				return;
+			}
+
 			int skinX = this.width / 2 + 140 - 40;
 			int skinY = this.height / 6 + 82 + trans;
 		
