@@ -135,7 +135,7 @@ public class WorldRenderer {
                            GL11.glScalef(var19, var19, var19);
                            GL11.glTranslatef((float)this.sizeDepth / 2.0F, (float)this.sizeHeight / 2.0F, (float)this.sizeDepth / 2.0F);
                            tessellator.startDrawingQuads();
-                           tessellator.setTranslationD((double)(-this.posX), (double)(-this.posY), (double)(-this.posZ));
+                           tessellator.setTranslationD((double)(this.posXClip - this.posX), (double)(this.posYClip - this.posY), (double)(this.posZClip - this.posZ));
                         }
 
                         if(var11 == 0 && Block.isBlockContainer[var18]) {

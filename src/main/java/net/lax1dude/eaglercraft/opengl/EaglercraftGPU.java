@@ -26,7 +26,6 @@ import com.carrotsearch.hppc.IntObjectMap;
 
 import dev.colbster937.eaglercraft.EaglerMathHelper;
 import net.lax1dude.eaglercraft.EagRuntime;
-import net.lax1dude.eaglercraft.vector.Matrix4f;
 import net.lax1dude.eaglercraft.internal.GLObjectMap;
 import net.lax1dude.eaglercraft.internal.IVertexArrayGL;
 import net.lax1dude.eaglercraft.internal.IBufferGL;
@@ -34,13 +33,11 @@ import net.lax1dude.eaglercraft.internal.IProgramGL;
 import net.lax1dude.eaglercraft.internal.IQueryGL;
 import net.lax1dude.eaglercraft.internal.ITextureGL;
 import net.lax1dude.eaglercraft.internal.PlatformOpenGL;
-import net.lax1dude.eaglercraft.internal.PlatformRuntime;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import static net.lax1dude.eaglercraft.internal.PlatformOpenGL.*;
-import static net.lax1dude.eaglercraft.opengl.FixedFunctionShader.FixedFunctionState.*;
 
 public class EaglercraftGPU extends GlStateManager {
 
@@ -192,34 +189,6 @@ public class EaglercraftGPU extends GlStateManager {
 	private static DisplayList currentList = null;
 	private static ByteBuffer displayListBuffer = EagRuntime.allocateByteBuffer(0x100000);
 
-	private static int debugBudget = 5000;
-	private static ByteBuffer debugRetained = null;
-	private static int debugRetainedCount = 0;
-
-	private static void debugCheckGLErrors(String tag) {
-		int err;
-		int cnt = 0;
-		while ((err = _wglGetError()) != 0 && cnt < 5) {
-			++cnt;
-			debugLog("GLERR " + tag + " err=0x" + Integer.toHexString(err));
-		}
-	}
-	private static int debugMvDumps = 0;
-	private static int debugBisectBudget = 2000000;
-	private static int debugDataDumps = 0;
-	private static final java.util.HashSet<String> debugSeen = new java.util.HashSet<String>();
-	static void debugLog(String msg) {
-		if (debugBudget <= 0) return;
-		if (!debugSeen.add(msg)) return;
-		--debugBudget;
-		System.out.println("[GLDL] " + msg);
-	}
-	private static String debugTexMat(int unit) {
-		int ptr = GlStateManager.textureMatrixStackPointer[unit];
-		net.lax1dude.eaglercraft.vector.Matrix4f m = GlStateManager.textureMatrixStack[unit][ptr];
-		return m.m00 + "," + m.m11 + "," + m.m30 + "," + m.m31;
-	}
-
 	public static void glNewList(int target, int op) {
 		if (currentList != null) {
 			throw new IllegalStateException("A display list is already being compiled you eagler!");
@@ -292,40 +261,10 @@ public class EaglercraftGPU extends GlStateManager {
 		
 		bindVAOGLArrayBufferNow(dp.vertexBuffer);
 		displayListBuffer.flip();
-		if (dp.attribs == (ATTRIB_TEXTURE | ATTRIB_COLOR) && dp.count >= 64 && debugDataDumps < 3) {
-			++debugDataDumps;
-			int n = (dp.count - 1) * 24;
-			debugLog("DATA count=" + dp.count + " bytes=" + displayListBuffer.remaining()
-					+ " v0 p=" + displayListBuffer.getFloat(0) + "," + displayListBuffer.getFloat(4) + ","
-					+ displayListBuffer.getFloat(8)
-					+ " c=" + (displayListBuffer.get(12) & 0xFF) + "," + (displayListBuffer.get(13) & 0xFF) + ","
-					+ (displayListBuffer.get(14) & 0xFF) + "," + (displayListBuffer.get(15) & 0xFF)
-					+ " t=" + displayListBuffer.getFloat(16) + "," + displayListBuffer.getFloat(20)
-					+ " vN p=" + displayListBuffer.getFloat(n) + "," + displayListBuffer.getFloat(n + 4) + ","
-					+ displayListBuffer.getFloat(n + 8)
-					+ " c=" + (displayListBuffer.get(n + 12) & 0xFF) + "," + (displayListBuffer.get(n + 13) & 0xFF) + ","
-					+ (displayListBuffer.get(n + 14) & 0xFF) + "," + (displayListBuffer.get(n + 15) & 0xFF)
-					+ " t=" + displayListBuffer.getFloat(n + 16) + "," + displayListBuffer.getFloat(n + 20)
-					+ " v1 p=" + displayListBuffer.getFloat(24) + "," + displayListBuffer.getFloat(28) + ","
-					+ displayListBuffer.getFloat(32)
-					+ " v2 p=" + displayListBuffer.getFloat(48) + "," + displayListBuffer.getFloat(52) + ","
-					+ displayListBuffer.getFloat(56));
-		}
-		if (dp.attribs == (ATTRIB_TEXTURE | ATTRIB_COLOR) && dp.count >= 64 && debugRetained == null) {
-			debugRetainedCount = dp.count;
-			debugRetained = PlatformRuntime.allocateByteBuffer(displayListBuffer.remaining());
-			debugRetained.put(displayListBuffer);
-			debugRetained.flip();
-			displayListBuffer.position(0);
-		}
 		_wglBufferData(GL_ARRAY_BUFFER, displayListBuffer, GL_STATIC_DRAW);
 		displayListBuffer.clear();
 		
 		FixedFunctionPipeline.setupDisplayList(dp);
-		debugLog("end attribs=0x" + Integer.toHexString(dp.attribs) + " state=0x" + Integer.toHexString(FixedFunctionPipeline.getFragmentState()) + " mode=" + dp.mode);
-		if (dp.attribs == (ATTRIB_TEXTURE | ATTRIB_COLOR) && dp.count >= 64) {
-			debugCheckGLErrors("endList count=" + dp.count);
-		}
 		currentList = null;
 	}
 
@@ -376,7 +315,6 @@ public class EaglercraftGPU extends GlStateManager {
 			throw new NullPointerException("Tried to call a display list that does not exist: " + displayList);
 		}
 		if (dp.attribs != -1) {
-			debugLog("call attribs=0x" + Integer.toHexString(dp.attribs) + " state=0x" + Integer.toHexString(FixedFunctionPipeline.getFragmentState()) + " tex0=" + GlStateManager.stateTexture[0] + " tex1=" + GlStateManager.stateTexture[1] + " bound0=" + GlStateManager.boundTexture[0] + " bound1=" + GlStateManager.boundTexture[1] + " color=" + GlStateManager.stateColorR + "," + GlStateManager.stateColorG + "," + GlStateManager.stateColorB + "," + GlStateManager.stateColorA + " blend=" + GlStateManager.stateBlend + " depthMask=" + GlStateManager.stateDepthMask + " texmat0=" + debugTexMat(0) + " lm=" + GlStateManager.textureCoordsX[1] + "," + GlStateManager.textureCoordsY[1] + " alphaRef=" + GlStateManager.stateAlphaTestRef + " cull=" + GlStateManager.stateCull + " cullFace=0x" + Integer.toHexString(GlStateManager.stateCullFace));
 			FixedFunctionPipeline p = FixedFunctionPipeline.setupRenderDisplayList(dp.attribs).update();
 			bindGLVertexArray(dp.vertexArray);
 			if (dp.mode == GL_QUADS) {
@@ -398,41 +336,6 @@ public class EaglercraftGPU extends GlStateManager {
 				}
 			} else {
 				p.drawArrays(dp.mode, 0, dp.count);
-			}
-			if (dp.attribs == (ATTRIB_TEXTURE | ATTRIB_COLOR) && dp.mode == GL_QUADS && dp.count >= 64) {
-				debugCheckGLErrors("normalDraw count=" + dp.count);
-			}
-			if (dp.attribs == (ATTRIB_TEXTURE | ATTRIB_COLOR) && dp.mode == GL_QUADS && dp.count >= 64
-					&& debugBisectBudget > 0) {
-				--debugBisectBudget;
-				int idxType = dp.count > quad16MaxVertices ? GL_UNSIGNED_INT : GL_UNSIGNED_SHORT;
-				debugLog("BISECT count=" + dp.count + " remaining=" + debugBisectBudget);
-				if (debugMvDumps < 5) {
-					++debugMvDumps;
-					Matrix4f mv = GlStateManager.modelMatrixStack[GlStateManager.modelMatrixStackPointer];
-					System.out.println("[GLDL] MV m00=" + mv.m00 + " m11=" + mv.m11 + " m22=" + mv.m22
-							+ " tx=" + mv.m30 + " ty=" + mv.m31 + " tz=" + mv.m32);
-				}
-				_wglDisable(GL_DEPTH_TEST);
-				FixedFunctionPipeline.debugBisectDraw(dp,
-						STATE_ENABLE_LIGHTMAP | STATE_ENABLE_ALPHA_TEST, 0.0f, 0.0f, 1.0f, idxType);
-				FixedFunctionPipeline.debugBisectFreshVAO(dp,
-						STATE_ENABLE_LIGHTMAP | STATE_ENABLE_ALPHA_TEST, 1.0f, 0.0f, 1.0f, idxType);
-				boolean cullWasOn = GlStateManager.stateCull;
-				if (cullWasOn) {
-					GlStateManager.disableCull();
-				}
-				FixedFunctionPipeline.debugBisectDraw(dp,
-						STATE_ENABLE_LIGHTMAP | STATE_ENABLE_ALPHA_TEST, 1.0f, 1.0f, 0.0f, idxType);
-				if (cullWasOn) {
-					GlStateManager.enableCull();
-				}
-				if (debugRetained != null) {
-					FixedFunctionPipeline.setupDirect(debugRetained, dp.attribs, true).update()
-							.drawDirectArrays(GL_QUADS, 0, debugRetainedCount);
-				}
-				_wglEnable(GL_DEPTH_TEST);
-				debugCheckGLErrors("bisect count=" + dp.count);
 			}
 		}
 	}
@@ -960,7 +863,6 @@ public class EaglercraftGPU extends GlStateManager {
 			displayListBuffer.put(buffer);
 			lastRender = null;
 		} else {
-			debugLog("direct attribs=0x" + Integer.toHexString(attrib) + " state=0x" + Integer.toHexString(FixedFunctionPipeline.getFragmentState()));
 			lastRender = FixedFunctionPipeline.setupDirect(buffer, attrib, mode == GL_QUADS).update();
 			lastRender.drawDirectArrays(mode, 0, count);
 			lastMode = mode;

@@ -22,7 +22,6 @@ public class WorldVertexBufferUploader {
 	public static void func_181679_a(WorldRenderer parWorldRenderer) {
 		int cunt = parWorldRenderer.getVertexCount();
 		if (cunt > 0) {
-			EaglercraftGPU.debugLog("tessdraw attribs=0x" + Integer.toHexString(parWorldRenderer.getVertexFormat().eaglercraftAttribBits) + " mode=" + parWorldRenderer.getDrawMode());
 			VertexFormat fmt = parWorldRenderer.getVertexFormat();
 			ByteBuffer buf = parWorldRenderer.getByteBuffer();
 			buf.position(0).limit(cunt * fmt.attribStride);
