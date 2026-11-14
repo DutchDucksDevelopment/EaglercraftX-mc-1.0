@@ -598,6 +598,12 @@ public class EntityRenderer {
       Profiler.startSection("lightTex");
       if(this.lightmapUpdateNeeded) {
          this.updateLightmap();
+         /* reset the flag: without this the lightmap texture was being fully
+            redefined ~120x/sec (twice per frame) while actively sampled on
+            texture unit 1, which on some drivers (ANGLE/V3D) reads back a
+            glitched texel for a frame = water flickering dark/bright.
+            Content only changes per tick, so upload once per tick. */
+         this.lightmapUpdateNeeded = false;
       }
 
       Profiler.endSection();
@@ -693,6 +699,12 @@ public class EntityRenderer {
       Profiler.startSection("lightTex");
       if(this.lightmapUpdateNeeded) {
          this.updateLightmap();
+         /* reset the flag: without this the lightmap texture was being fully
+            redefined ~120x/sec (twice per frame) while actively sampled on
+            texture unit 1, which on some drivers (ANGLE/V3D) reads back a
+            glitched texel for a frame = water flickering dark/bright.
+            Content only changes per tick, so upload once per tick. */
+         this.lightmapUpdateNeeded = false;
       }
 
       GL11.glEnable(2884 /*GL_CULL_FACE*/);
