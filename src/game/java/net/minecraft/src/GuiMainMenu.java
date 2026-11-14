@@ -10,6 +10,7 @@ import java.util.Random;
 import net.lax1dude.eaglercraft.EagRuntime;
 import net.lax1dude.eaglercraft.opengl.ImageData;
 import net.lax1dude.eaglercraft.profile.GuiScreenEditProfile;
+import dev.colbster937.eaglercraft.rp.TexturePack;
 import dev.colbster937.eaglercraft.utils.I18n;
 import net.minecraft.src.GuiButton;
 import net.minecraft.src.GuiOptions;
@@ -32,7 +33,7 @@ public class GuiMainMenu extends GuiScreen {
    public GuiMainMenu() {
       try {
          ArrayList var1 = new ArrayList();
-         BufferedReader var2 = new BufferedReader(new InputStreamReader(GuiMainMenu.class.getResourceAsStream("/title/splashes.txt"), Charset.forName("UTF-8")));
+         BufferedReader var2 = new BufferedReader(new InputStreamReader(TexturePack.getResourceAsStream("/title/splashes.txt"), Charset.forName("UTF-8")));
          String var3 = "";
 
          while((var3 = var2.readLine()) != null) {
