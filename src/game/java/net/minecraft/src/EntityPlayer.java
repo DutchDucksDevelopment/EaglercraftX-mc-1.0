@@ -1,6 +1,8 @@
 package net.minecraft.src;
 
 import java.util.List;
+import net.lax1dude.eaglercraft.profile.EaglerProfile;
+import net.lax1dude.eaglercraft.profile.GuiScreenEditProfile;
 import net.minecraft.src.AchievementList;
 import net.minecraft.src.AxisAlignedBB;
 import net.minecraft.src.Block;
@@ -99,7 +101,11 @@ public abstract class EntityPlayer extends EntityLiving {
       this.entityType = "humanoid";
       this.field_9353_B = 180.0F;
       this.fireResistance = 20;
-      this.texture = "/mob/char.png";
+      if(EaglerProfile.presetSkinId >= 0) {
+         this.texture = GuiScreenEditProfile.defaultOptionsTextures[EaglerProfile.presetSkinId].getTextureName();
+      } else {
+         this.texture = "/mob/char.png";
+      }
    }
 
    public int getMaxHealth() {
