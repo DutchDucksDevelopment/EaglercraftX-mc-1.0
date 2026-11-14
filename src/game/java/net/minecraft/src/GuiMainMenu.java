@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Random;
+import net.lax1dude.eaglercraft.EagRuntime;
 import net.lax1dude.eaglercraft.opengl.ImageData;
 import net.lax1dude.eaglercraft.profile.GuiScreenEditProfile;
 import dev.colbster937.eaglercraft.utils.I18n;
@@ -82,7 +83,7 @@ public class GuiMainMenu extends GuiScreen {
       StringTranslate var2 = StringTranslate.getInstance();
       int var4 = this.height / 4 + 48;
       this.controlList.add(new GuiButton(1, this.width / 2 - 100, var4, var2.translateKey("menu.singleplayer")));
-      this.controlList.add(this.multiplayerButton = new GuiButton(2, this.width / 2 - 100, var4 + 24, var2.translateKey("menu.multiplayer")));
+      this.controlList.add(this.multiplayerButton = new GuiButton(2, this.width / 2 - 100, var4 + 24, "Fork on GitHub"));
       this.controlList.add(new GuiButton(3, this.width / 2 - 100, var4 + 48, var2.translateKey("menu.mods")));
       if(this.mc.hideQuitButton) {
          this.controlList.add(new GuiButton(0, this.width / 2 - 100, var4 + 72, var2.translateKey("menu.options")));
@@ -107,9 +108,11 @@ public class GuiMainMenu extends GuiScreen {
       }
 
       if(var1.id == 2) {
+         EagRuntime.openLink("https://github.com/DutchDucksDevelopment/EaglercraftX-mc-1.0");
       }
 
       if(var1.id == 3) {
+         this.mc.displayGuiScreen(new GuiTexturePacks(this));
       }
 
       if(var1.id == 4) {
