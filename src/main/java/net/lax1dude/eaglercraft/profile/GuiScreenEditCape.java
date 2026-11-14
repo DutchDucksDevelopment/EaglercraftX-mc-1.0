@@ -163,7 +163,15 @@ public class GuiScreenEditCape extends GuiScreen {
 		int capeTex = DefaultCapes.getCapeTexture(selectedSlot - 1);
 		if (capeTex != -1) {
 			Minecraft.getMinecraft().renderEngine.bindTexture(capeTex);
+			/* same cloak transform RenderPlayer uses in-game: the cloak box sits
+			   inside the torso volume by default and must be pushed to the back
+			   surface (translate 0.125 = 2px) + 6 degree drape tilt + 180 flip */
+			GL11.glPushMatrix();
+			GL11.glTranslatef(0.0F, 0.0F, 0.125F);
+			GL11.glRotatef(6.0F, 1.0F, 0.0F, 0.0F);
+			GL11.glRotatef(180.0F, 0.0F, 1.0F, 0.0F);
 			playerModel.renderCloak(0.0625F);
+			GL11.glPopMatrix();
 		}
 
 		RenderHelper.disableStandardItemLighting();
