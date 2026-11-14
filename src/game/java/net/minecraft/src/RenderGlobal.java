@@ -632,13 +632,18 @@ public class RenderGlobal implements IWorldAccess {
             int var8 = this.sortedWorldRenderers[var7].getGLCallListForPass(var3);
             if(var8 >= 0) {
                if(var26) {
+                  /* use posX/posY/posZ (true world coords). posXMinus/posZMinus
+                     are world coords rounded down to a multiple of 1024 (the
+                     clip-offset scheme) and are up to 1024 blocks away from the
+                     camera - using them culled EVERY chunk (the invisible-terrain
+                     bug). posX + sizeWidth = the chunk's real world AABB. */
                   WorldRenderer var29 = this.sortedWorldRenderers[var7];
-                  double var30 = (double)var29.posXMinus;
-                  double var31 = (double)var29.posYMinus;
-                  double var32 = (double)var29.posZMinus;
-                  double var33 = Math.min(Math.max(var20, var30), var30 + 16.0D) - var20;
-                  double var34 = Math.min(Math.max(var10, var31), var31 + 128.0D) - var10;
-                  double var35 = Math.min(Math.max(var12, var32), var32 + 16.0D) - var12;
+                  double var30 = (double)var29.posX;
+                  double var31 = (double)var29.posY;
+                  double var32 = (double)var29.posZ;
+                  double var33 = Math.min(Math.max(var20, var30), var30 + (double)var29.sizeWidth) - var20;
+                  double var34 = Math.min(Math.max(var10, var31), var31 + (double)var29.sizeHeight) - var10;
+                  double var35 = Math.min(Math.max(var12, var32), var32 + (double)var29.sizeDepth) - var12;
                   if(var33 * var33 + var34 * var34 + var35 * var35 > var28) {
                      continue;
                   }

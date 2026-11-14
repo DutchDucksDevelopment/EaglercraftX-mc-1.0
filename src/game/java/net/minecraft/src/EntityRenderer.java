@@ -1295,10 +1295,10 @@ public class EntityRenderer {
                }
             }
 
-            /* fog culling DISABLED: caused all terrain to be invisible on some
-               setups (only water pass still rendered). fogEndDistance stays
-               Float.MAX_VALUE so RenderGlobal skips the cull entirely.
-               this.fogEndDistance = var12; */
+            /* sodium-style fog culling: record the real fog end so RenderGlobal
+               can skip chunks that are 100% fogged (invisible against the sky).
+               NOTE: must be the fog value actually applied to terrain below. */
+            this.fogEndDistance = var12;
             GL11.glFogi(2917 /*GL_FOG_MODE*/, 9729 /*GL_LINEAR*/);
             if(var1 < 0) {
                GL11.glFogf(2915 /*GL_FOG_START*/, 0.0F);
