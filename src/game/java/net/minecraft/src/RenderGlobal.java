@@ -605,6 +605,14 @@ public class RenderGlobal implements IWorldAccess {
    private int renderSortedRenderers(int var1, int var2, int var3, double var4) {
       this.glRenderLists.clear();
       int var6 = 0;
+      EntityLiving var19 = this.mc.renderViewEntity;
+      double var20 = var19.lastTickPosX + (var19.posX - var19.lastTickPosX) * var4;
+      double var10 = var19.lastTickPosY + (var19.posY - var19.lastTickPosY) * var4;
+      double var12 = var19.lastTickPosZ + (var19.posZ - var19.lastTickPosZ) * var4;
+      float var25 = this.mc.entityRenderer.fogEndDistance;
+      boolean var26 = var25 < 3.0E38F;
+      double var27 = var26 ? (double)(var25 + 8.0F) : 0.0D;
+      double var28 = var27 * var27;
 
       for(int var7 = var1; var7 < var2; ++var7) {
          if(var3 == 0) {
@@ -623,16 +631,24 @@ public class RenderGlobal implements IWorldAccess {
          if(!this.sortedWorldRenderers[var7].skipRenderPass[var3] && this.sortedWorldRenderers[var7].isInFrustum && (!this.occlusionEnabled || this.sortedWorldRenderers[var7].isVisible)) {
             int var8 = this.sortedWorldRenderers[var7].getGLCallListForPass(var3);
             if(var8 >= 0) {
+               if(var26) {
+                  WorldRenderer var29 = this.sortedWorldRenderers[var7];
+                  double var30 = (double)var29.posXMinus;
+                  double var31 = (double)var29.posYMinus;
+                  double var32 = (double)var29.posZMinus;
+                  double var33 = Math.min(Math.max(var20, var30), var30 + 16.0D) - var20;
+                  double var34 = Math.min(Math.max(var10, var31), var31 + 128.0D) - var10;
+                  double var35 = Math.min(Math.max(var12, var32), var32 + 16.0D) - var12;
+                  if(var33 * var33 + var34 * var34 + var35 * var35 > var28) {
+                     continue;
+                  }
+               }
                this.glRenderLists.add(this.sortedWorldRenderers[var7]);
                ++var6;
             }
          }
       }
 
-      EntityLiving var19 = this.mc.renderViewEntity;
-      double var20 = var19.lastTickPosX + (var19.posX - var19.lastTickPosX) * var4;
-      double var10 = var19.lastTickPosY + (var19.posY - var19.lastTickPosY) * var4;
-      double var12 = var19.lastTickPosZ + (var19.posZ - var19.lastTickPosZ) * var4;
       int var14 = 0;
 
       for(int var15 = 0; var15 < this.allRenderLists.length; ++var15) {
