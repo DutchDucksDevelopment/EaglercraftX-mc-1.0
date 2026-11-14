@@ -1161,10 +1161,27 @@ public class RenderGlobal implements IWorldAccess {
                Collections.sort(var7, var5);
             }
 
-            for(int var21 = var7.size() - 1; var21 >= 0; --var21) {
-               WorldRenderer var23 = (WorldRenderer)var7.get(var21);
+            /* 1.0 port perf: vanilla rebuilt EVERY dirty renderer within 16 blocks in a
+               single call. Native JVM chunk rebuilds cost ~1ms so it was only a stutter,
+               but on TeaVM each rebuild costs 5-15ms, so crossing a chunk boundary (which
+               marks dozens of renderers dirty) caused 500ms+ frame spikes (fps dropping
+               to ~2). Rebuild at least 4, then stop after an 8ms budget and re-queue the
+               rest for the following frames. */
+            int var30 = 0;
+            long var31 = System.nanoTime();
+            int var32 = var7.size() - 1;
+            for(; var32 >= 0; --var32) {
+               WorldRenderer var23 = (WorldRenderer)var7.get(var32);
                var23.updateRenderer();
                var23.needsUpdate = false;
+               if(var7.size() - var32 >= 4 && System.nanoTime() - var31 > 8000000L) {
+                  var30 = var32;
+                  break;
+               }
+            }
+
+            for(int var33 = var30 - 1; var33 >= 0; --var33) {
+               this.worldRenderersToUpdate.add(var7.get(var33));
             }
          }
 
