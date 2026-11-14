@@ -191,7 +191,7 @@ public class EaglercraftGPU extends GlStateManager {
 	private static DisplayList currentList = null;
 	private static ByteBuffer displayListBuffer = EagRuntime.allocateByteBuffer(0x100000);
 
-	private static int debugBudget = 300;
+	private static int debugBudget = 5000;
 
 	private static void debugCheckGLErrors(String tag) {
 		int err;
@@ -202,7 +202,7 @@ public class EaglercraftGPU extends GlStateManager {
 		}
 	}
 	private static int debugMvDumps = 0;
-	private static int debugBisectBudget = 20000;
+	private static int debugBisectBudget = 2000000;
 	private static int debugDataDumps = 0;
 	private static final java.util.HashSet<String> debugSeen = new java.util.HashSet<String>();
 	static void debugLog(String msg) {
